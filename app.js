@@ -2,20 +2,24 @@ const express = require("express");
 const app = express();
 const db = require("./models");
 const indexRouter = require("./routes");
+const logger = require("morgan");
 require("dotenv").config();
-db.sequelize.sync();
+
+(async () => {
+  await db.sequelize.sync();
+  console.log("MariaDB Sync 완료!");
+})();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(logger("dev"));
 app.use("/", indexRouter);
 
 app.use((req, res, next) => {
-  res.status(404).send("요청하신 페이지를 찾을 수 없습니다.");
-});
-app.use(function (err, req, res, next) {
-  console.error(err.stack);
-  res.status(500).send("서버 에러!");
+  return res.status(404).json({
+    message: "요청하신 페이지를 찾을 수 없습니다.",
+    success: false,
+  });
 });
 
 const port = process.env.PORT;

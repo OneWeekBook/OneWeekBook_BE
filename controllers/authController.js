@@ -4,9 +4,7 @@ const authController = {
   sendCode: (req, res) => {
     const { email } = req.body;
     codeNumber = Math.floor(Math.random() * 10000);
-    console.log(sendEmail(email, codeNumber));
     const boolSendEmail = sendEmail(email, codeNumber);
-
     if (boolSendEmail) {
       return res.status(200).json({
         message: "이메일 전송 완료!",
@@ -23,7 +21,7 @@ const authController = {
     const { code } = req.body;
     if (parseInt(code) === codeNumber) {
       res.status(200).json({
-        message: "이메일 인증에 성공했습니다",
+        message: "이메일 인증에 성공했습니다.",
         success: true,
       });
     } else {
