@@ -40,6 +40,7 @@ const authModule = {
         next();
       } catch (error) {
         return res.status(500).json({
+          success: false,
           message: "DB서버 에러",
         });
       }
