@@ -11,7 +11,7 @@ const userController = {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: "DB 서버에러!",
+        message: "DB 에러!",
       });
     }
     if (user) {
@@ -51,7 +51,7 @@ const userController = {
       fUser = await User.findOne({ where: { email } });
     } catch (error) {
       return res.status(500).json({
-        message: "DB 서버에러!",
+        message: "DB 에러!",
         success: false,
       });
     }
@@ -72,7 +72,7 @@ const userController = {
         });
       } catch (error) {
         return res.status(500).json({
-          message: "DB 서버에러!",
+          message: "DB 에러!",
           success: false,
         });
       }
@@ -96,6 +96,44 @@ const userController = {
       success: true,
       user: req.user,
     });
+  },
+
+  newPassword: async (req, res) => {
+    const { email, password } = req.body;
+    let fUser;
+    try {
+      fUser = await User.findOne({ where: { email } });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB 에러!",
+      });
+    }
+    if (!fUser) {
+      return res.status(400).json({
+        message: "해당하는 유저가 없습니다.",
+        success: false,
+      });
+    }
+    const encryptPassword = hash(password);
+    if (!encryptPassword) {
+      return res.status(501).json({
+        message: "bcrypt hash 오류",
+        success: false,
+      });
+    }
+    try {
+      await User.update({ password: encryptPassword }, { where: { email } });
+      return res.status(200).json({
+        message: "비밀번호 변경 완료!",
+        success: true,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "DB 에러!",
+        success: false,
+      });
+    }
   },
 };
 
