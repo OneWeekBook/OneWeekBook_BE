@@ -1,9 +1,9 @@
 const { sendEmail } = require("../modules/nodeMailerModule");
-let codeNumber = -11111;
+let codeNumber = -111111;
 const authController = {
   sendCode: (req, res) => {
     const { email } = req.body;
-    codeNumber = Math.floor(Math.random() * 10000);
+    codeNumber = Math.floor(Math.random() * 1000000);
     const boolSendEmail = sendEmail(email, codeNumber);
     if (boolSendEmail) {
       return res.status(200).json({
