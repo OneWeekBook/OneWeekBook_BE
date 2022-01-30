@@ -5,6 +5,7 @@ const { User } = require("../models");
 const userController = {
   login: async (req, res) => {
     const { email, password } = req.body;
+    console.log(email, password);
     let user = null;
     try {
       user = await User.findOne({ where: { email } });

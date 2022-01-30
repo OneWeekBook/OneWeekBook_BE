@@ -3,13 +3,14 @@ const app = express();
 const db = require("./models");
 const indexRouter = require("./routes");
 const logger = require("morgan");
+const cors = require("cors");
 require("dotenv").config();
 
 (async () => {
   await db.sequelize.sync();
   console.log("MariaDB Sync 완료!");
 })();
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));

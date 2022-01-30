@@ -1,6 +1,6 @@
 const { sendEmail } = require("../modules/nodeMailerModule");
-let codeNumber = -111111;
-let ing = false;
+let codeNumber = "";
+let ing = false; // 인증 시간이 진행중인지 확인변수
 let timer = null;
 
 const authController = {
@@ -12,7 +12,9 @@ const authController = {
       });
     }
     const { email } = req.body;
-    codeNumber = Math.floor(Math.random() * 1000000);
+    for (let i = 0; i < 6; i++) {
+      codeNumber += Math.floor(Math.random() * 10);
+    }
     const boolSendEmail = sendEmail(email, codeNumber);
     if (boolSendEmail) {
       ing = true;
@@ -32,15 +34,17 @@ const authController = {
 
   authEmail: (req, res) => {
     if (!ing) {
+      codeNumber = "";
       return res.status(408).json({
         success: false,
         message: "이메인 인증 제한시간이 만료되었습니다.",
       });
     }
     const { code } = req.body;
-    if (parseInt(code) === codeNumber) {
+    if (code === codeNumber) {
       ing = false;
       clearTimeout(timer);
+      codeNumber = "";
       res.status(200).json({
         message: "이메일 인증에 성공했습니다.",
         success: true,
