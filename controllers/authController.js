@@ -20,6 +20,7 @@ const authController = {
       ing = true;
       timer = setTimeout(() => {
         ing = false;
+        codeNumber = "";
       }, 180000);
       return res.status(200).json({
         message: "이메일 전송 완료!",
