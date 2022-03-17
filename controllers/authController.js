@@ -8,7 +8,7 @@ const authController = {
     if (ing) {
       return res.status(400).json({
         success: false,
-        message: "이미 이메일이 전송되었습니다.",
+        message: "이미 이메일이 전송되었습니다.\n 잠시 후 재전송 바랍니다.",
       });
     }
     const { email } = req.body;

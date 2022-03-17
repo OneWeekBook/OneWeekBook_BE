@@ -13,6 +13,7 @@ const sequelize = new Sequelize(
 db.sequelize = sequelize; // app에서 sync해주기 위해서
 db.Sequelize = Sequelize;
 db.User = require("./user")(sequelize, DataTypes);
+db.Category = require("./category")(sequelize, DataTypes);
 
 db.Op = Op;
 

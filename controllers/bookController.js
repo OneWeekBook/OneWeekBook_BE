@@ -1,4 +1,5 @@
 const { bookSearch } = require("../modules/bookModule");
+const { Category } = require("../models");
 
 const bookController = {
   search: async (req, res) => {
@@ -21,6 +22,20 @@ const bookController = {
           books: bookData,
         });
       }
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "서버에러!",
+      });
+    }
+  },
+  getCategory: async (req, res) => {
+    try {
+      const categories = await Category.findAll();
+      return res.status(200).json({
+        success: true,
+        categories,
+      });
     } catch (error) {
       return res.status(500).json({
         success: false,
