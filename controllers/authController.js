@@ -46,12 +46,12 @@ const authController = {
       ing = false;
       clearTimeout(timer);
       codeNumber = "";
-      res.status(200).json({
+      return res.status(200).json({
         message: "이메일 인증에 성공했습니다.",
         success: true,
       });
     } else {
-      res.status(400).json({
+      return res.status(400).json({
         message: "인증번호가 틀립니다.",
         success: false,
       });

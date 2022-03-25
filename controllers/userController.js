@@ -5,7 +5,6 @@ const { User } = require("../models");
 const userController = {
   login: async (req, res) => {
     const { email, password } = req.body;
-    console.log(email, password);
     let user = null;
     try {
       user = await User.findOne({ where: { email } });
@@ -18,14 +17,14 @@ const userController = {
     if (user) {
       // 유저 존재o
       // 유저 비밀번호 비교
-      const tf = compare(password, user.password);
-      if (tf === "error") {
-        return res.status(501).json({
-          message: "bcrypt compare error",
+      const compare_pwd = await compare(password, user.password);
+      if (!compare_pwd.success) {
+        return res.status(510).json({
+          message: "bcrypt compare 에러",
           success: false,
         });
       }
-      if (tf) {
+      if (compare_pwd.compare) {
         //비밀번호 o
         const accessToken = create({ id: user.id });
         return res.status(200).json({
@@ -40,7 +39,7 @@ const userController = {
         message: "비밀번호가 다릅니다.",
       });
     }
-    return res.status(400).json({
+    return res.status(404).json({
       success: false,
       message: "유저가 존재하지 않습니다.",
     });
@@ -58,16 +57,21 @@ const userController = {
     }
     if (!fUser) {
       //이메일이 없을 때
-      const encryptPassword = hash(password);
-      if (!encryptPassword) {
-        return res.status(501).json({
-          message: "bcrypt hash 오류",
+      const encryptPassword = await hash(password);
+      if (!encryptPassword.success) {
+        return res.status(511).json({
+          message: "bcrypt hash 에러",
           success: false,
         });
       }
       try {
-        await User.create({ email, username, password: encryptPassword, nick });
-        return res.status(200).json({
+        await User.create({
+          email,
+          username,
+          password: encryptPassword.hash,
+          nick,
+        });
+        return res.status(201).json({
           message: "회원가입 완료!",
           success: true,
         });
@@ -87,7 +91,7 @@ const userController = {
 
   getUser: (req, res) => {
     if (!req.user) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: "유저 정보가 없습니다.",
       });
@@ -111,20 +115,23 @@ const userController = {
       });
     }
     if (!fUser) {
-      return res.status(400).json({
+      return res.status(404).json({
         message: "해당하는 유저가 없습니다.",
         success: false,
       });
     }
-    const encryptPassword = hash(password);
-    if (!encryptPassword) {
-      return res.status(501).json({
-        message: "bcrypt hash 오류",
+    const encryptPassword = await hash(password);
+    if (!encryptPassword.success) {
+      return res.status(511).json({
+        message: "bcrypt hash 에러",
         success: false,
       });
     }
     try {
-      await User.update({ password: encryptPassword }, { where: { email } });
+      await User.update(
+        { password: encryptPassword.hash },
+        { where: { email } }
+      );
       return res.status(200).json({
         message: "비밀번호 변경 완료!",
         success: true,
@@ -133,6 +140,63 @@ const userController = {
       return res.status(500).json({
         message: "DB 에러!",
         success: false,
+      });
+    }
+  },
+  deleteUser: async (req, res) => {
+    const { password, id } = req.body;
+    try {
+      const user = await User.findOne({ where: { id } });
+      if (user) {
+        const compare_pwd = await compare(password, user.password);
+        if (!compare_pwd.success) {
+          return res.status(510).json({
+            message: "bcrypt compare 에러!",
+            success: false,
+          });
+        }
+        if (compare_pwd.compare) {
+          try {
+            await User.destroy({ where: { id } });
+            return res.status(200).json({
+              success: false,
+              message: "유저 삭제 완료!",
+            });
+          } catch (error) {
+            return res.status(500).json({
+              message: "DB 에러!",
+              success: false,
+            });
+          }
+        }
+        return res.status(400).json({
+          success: false,
+          message: "비밀번호가 다릅니다.",
+        });
+      }
+      return res.status(404).json({
+        success: false,
+        message: "유저가 존재하지 않습니다.",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: "DB 에러!",
+        success: false,
+      });
+    }
+  },
+  updateNick: async (req, res) => {
+    const { nick, id } = req.body;
+    try {
+      await User.update({ nick }, { where: { id } });
+      return res.status(200).json({
+        success: true,
+        message: "닉네임 변경이 완료되었습니다.",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB 에러!",
       });
     }
   },

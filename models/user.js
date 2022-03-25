@@ -12,19 +12,14 @@ const User = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: true,
     },
     nick: {
       type: DataTypes.STRING(30),
       allowNull: true,
     },
-    state: {
+    role: {
       type: DataTypes.INTEGER(2),
-      defaultValue: 0, //0은 회원, 1은 탈퇴회원,
-    },
-    status: {
-      type: DataTypes.INTEGER(2),
-      defaultValue: 0, //0은 일반회원, 1은 관리자,
+      defaultValue: 1, //0: 관리자, 1: 새싹, 2: 떡잎,
     },
   });
 };

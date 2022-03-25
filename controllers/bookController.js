@@ -7,12 +7,12 @@ const bookController = {
       const bookData = await bookSearch(req.query);
       if (bookData === -1) {
         return res.status(509).json({
-          message: "Naver API 에러!",
+          message: "데이터를 가져오는데 실패했습니다.",
           success: false,
         });
       } else if (bookData === -2) {
         return res.status(508).json({
-          message: "Axios 에러!",
+          message: "네이버 API 에러!",
           success: false,
         });
       } else {
@@ -25,21 +25,28 @@ const bookController = {
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: "서버에러!",
+        message: "DB 에러!",
       });
     }
   },
   getCategory: async (req, res) => {
     try {
       const categories = await Category.findAll();
-      return res.status(200).json({
-        success: true,
-        categories,
+      if (categories) {
+        return res.status(200).json({
+          success: true,
+          message: "카테고리 조회 성공",
+          categories,
+        });
+      }
+      return res.status(404).json({
+        success: false,
+        message: "카테고리를 가져오는데 실패했습니다.",
       });
     } catch (error) {
       return res.status(500).json({
         success: false,
-        message: "서버에러!",
+        message: "DB 에러!",
       });
     }
   },

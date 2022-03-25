@@ -6,7 +6,7 @@ const jwtModule = {
     const option = {
       algorithm: "HS256",
       expiresIn: "30d",
-      issuer: "leejuhyeok",
+      issuer: "oneweekbook",
     };
 
     const token = jwt.sign(payload, secretKey, option);

@@ -2,20 +2,26 @@ const bcrypt = require("bcrypt");
 const { saltRounds } = require("../config/bcryptConfig.json");
 const salt = parseInt(saltRounds);
 const bcryptModule = {
-  compare: (inputPassword, dbPassword) => {
+  compare: async (inputPassword, dbPassword) => {
     try {
-      const passwordTrueFalse = bcrypt.compareSync(inputPassword, dbPassword);
-      return passwordTrueFalse;
+      const passwordTrueFalse = await bcrypt.compare(inputPassword, dbPassword);
+      return {
+        success: true,
+        compare: passwordTrueFalse,
+      };
     } catch (error) {
-      return "error";
+      return { success: false };
     }
   },
-  hash: (inputPassword) => {
+  hash: async (inputPassword) => {
     try {
-      const hash = bcrypt.hashSync(inputPassword, salt);
-      return hash;
+      const hash = await bcrypt.hash(inputPassword, salt);
+      return {
+        success: true,
+        hash,
+      };
     } catch (error) {
-      return false;
+      return { success: false };
     }
   },
 };
