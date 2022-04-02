@@ -15,7 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
 app.use("/", indexRouter);
-
 app.use((req, res, next) => {
   return res.status(404).json({
     message: "요청하신 페이지를 찾을 수 없습니다.",
