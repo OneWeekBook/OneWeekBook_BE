@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { search } = require("../../controllers/bookController");
+const { isLoggedIn } = require("../../modules/authModule");
 const categoryRouter = require("./category");
-const wishBookRouter = require("./wishBook");
+const myRouter = require("./my");
 
 router.use("/category", categoryRouter);
-router.use("/wishBook");
-router.get("/search", search);
-
+router.use("/my", myRouter);
 module.exports = router;

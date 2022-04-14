@@ -4,13 +4,15 @@ const BookReview = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    like: {
+    likeCount: {
       type: DataTypes.INTEGER(11),
       defaultValue: 0,
+      allowNull: false,
     },
     rating: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.DECIMAL(2, 1),
       defaultValue: 0,
+      allowNull: false,
     },
   });
 };

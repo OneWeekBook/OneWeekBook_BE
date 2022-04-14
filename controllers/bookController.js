@@ -1,34 +1,6 @@
-const { bookSearch } = require("../modules/bookModule");
-const { Category } = require("../models");
+const { Category, WishBook } = require("../models");
 
 const bookController = {
-  search: async (req, res) => {
-    try {
-      const bookData = await bookSearch(req.query);
-      if (bookData === -1) {
-        return res.status(509).json({
-          message: "데이터를 가져오는데 실패했습니다.",
-          success: false,
-        });
-      } else if (bookData === -2) {
-        return res.status(508).json({
-          message: "네이버 API 에러!",
-          success: false,
-        });
-      } else {
-        return res.status(200).json({
-          success: true,
-          message: "데이터 조회 성공",
-          books: bookData,
-        });
-      }
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "DB 에러!",
-      });
-    }
-  },
   getCategory: async (req, res) => {
     try {
       const categories = await Category.findAll();
@@ -47,6 +19,32 @@ const bookController = {
       return res.status(500).json({
         success: false,
         message: "DB 에러!",
+      });
+    }
+  },
+  getWishList: async (req, res) => {
+    try {
+      const { userId } = req.query;
+      const wishes = await WishBook.findAll({
+        where: {
+          userId,
+        },
+      });
+      if (wishes.length) {
+        return res.status(200).json({
+          success: true,
+          message: "데이터 조회 성공!",
+          wishes,
+        });
+      }
+      return res.status(404).json({
+        success: false,
+        message: "찜 목록을 가져오는데 실패했습니다.",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
       });
     }
   },

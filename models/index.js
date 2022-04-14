@@ -15,7 +15,7 @@ db.Sequelize = Sequelize;
 db.User = require("./user")(sequelize, DataTypes);
 db.Category = require("./category")(sequelize, DataTypes);
 db.WishBook = require("./wishBook")(sequelize, DataTypes);
-db.BookComment = require("./bookComment")(sequelize, DataTypes);
+db.BookParagraph = require("./bookParagraph")(sequelize, DataTypes);
 db.BookReview = require("./bookReview")(sequelize, DataTypes);
 
 //source key는 왼쪽 db값의 값, target key는 오른쪽의 db값의 값
@@ -41,13 +41,13 @@ db.BookReview.belongsTo(db.WishBook, {
   targetKey: "id",
 });
 
-db.WishBook.hasMany(db.BookComment, {
+db.WishBook.hasMany(db.BookParagraph, {
   foreignKey: "bookId",
   sourceKey: "id",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-db.BookComment.belongsTo(db.WishBook, {
+db.BookParagraph.belongsTo(db.WishBook, {
   foreignKey: "bookId",
   targetKey: "id",
 });

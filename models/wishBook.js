@@ -8,6 +8,10 @@ const WishBook = (sequelize, DataTypes) => {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
+    publisher: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
     img: {
       type: DataTypes.STRING(100),
       allowNull: true,
@@ -16,6 +20,7 @@ const WishBook = (sequelize, DataTypes) => {
     progress: {
       type: DataTypes.INTEGER(1), // 0:찜, 1:읽는중 2:읽기완료
       allowNull: false,
+      defaultValue: 0,
     },
   });
 };
