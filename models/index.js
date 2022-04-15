@@ -14,40 +14,40 @@ db.sequelize = sequelize; // app에서 sync해주기 위해서
 db.Sequelize = Sequelize;
 db.User = require("./user")(sequelize, DataTypes);
 db.Category = require("./category")(sequelize, DataTypes);
-db.WishBook = require("./wishBook")(sequelize, DataTypes);
+db.UserBookList = require("./userBookList")(sequelize, DataTypes);
 db.BookParagraph = require("./bookParagraph")(sequelize, DataTypes);
 db.BookReview = require("./bookReview")(sequelize, DataTypes);
 
 //source key는 왼쪽 db값의 값, target key는 오른쪽의 db값의 값
-db.User.hasMany(db.WishBook, {
+db.User.hasMany(db.UserBookList, {
   foreignKey: "userId",
   sourceKey: "id", //왼쪽(user) db의 id값
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-db.WishBook.belongsTo(db.User, {
+db.UserBookList.belongsTo(db.User, {
   foreignKey: "userId",
   targetKey: "id",
 });
 
-db.WishBook.hasMany(db.BookReview, {
+db.UserBookList.hasMany(db.BookReview, {
   foreignKey: "bookId",
   sourceKey: "id",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-db.BookReview.belongsTo(db.WishBook, {
+db.BookReview.belongsTo(db.UserBookList, {
   foreignKey: "bookId",
   targetKey: "id",
 });
 
-db.WishBook.hasMany(db.BookParagraph, {
+db.UserBookList.hasMany(db.BookParagraph, {
   foreignKey: "bookId",
   sourceKey: "id",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-db.BookParagraph.belongsTo(db.WishBook, {
+db.BookParagraph.belongsTo(db.UserBookList, {
   foreignKey: "bookId",
   targetKey: "id",
 });

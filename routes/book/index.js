@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { isLoggedIn } = require("../../modules/authModule");
 const categoryRouter = require("./category");
-const myRouter = require("./my");
+const myListRouter = require("./mylist");
+const paragraphRouter = require("./paragraph");
 
 router.use("/category", categoryRouter);
-router.use("/my", myRouter);
+router.use("/mylist", myListRouter);
+router.use("/paragraph", paragraphRouter);
 module.exports = router;

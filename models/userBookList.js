@@ -1,5 +1,5 @@
-const WishBook = (sequelize, DataTypes) => {
-  return sequelize.define("wishBook", {
+const UserBookList = (sequelize, DataTypes) => {
+  return sequelize.define("userBookList", {
     title: {
       type: DataTypes.STRING(100),
       allowNull: false,
@@ -17,6 +17,10 @@ const WishBook = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: null,
     },
+    isbn: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
     progress: {
       type: DataTypes.INTEGER(1), // 0:찜, 1:읽는중 2:읽기완료
       allowNull: false,
@@ -25,4 +29,4 @@ const WishBook = (sequelize, DataTypes) => {
   });
 };
 
-module.exports = WishBook;
+module.exports = UserBookList;
