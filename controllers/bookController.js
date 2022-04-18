@@ -1,7 +1,13 @@
-const { Category, UserBookList, BookParagraph } = require("../models");
+const {
+  Category,
+  UserBookList,
+  BookParagraph,
+  BookReview,
+  BookReviewLike,
+} = require("../models");
 
 const bookController = {
-  getCategory: async (req, res) => {
+  getCategories: async (req, res) => {
     try {
       const categories = await Category.findAll();
       if (categories) {
@@ -171,6 +177,127 @@ const bookController = {
       return res.status(200).json({
         success: true,
         message: "구절이 삭제되었습니다.",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
+  getAllReviews: async (req, res) => {
+    try {
+      const reviews = await BookReview.findAll();
+      if (reviews) {
+        return res.status(200).json({
+          success: true,
+          message: "리뷰 조회 완료!",
+          reviews,
+        });
+      }
+      return res.status(404).json({
+        success: false,
+        message: "리뷰 조회 실패!",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
+  getOneReviews: async (req, res) => {
+    try {
+      console.log(req.params);
+      const { bookId } = req.params;
+      console.log(bookId);
+      const reviews = await BookReview.findAll({ where: { bookId } });
+      if (reviews) {
+        return res.status(200).json({
+          success: true,
+          message: "리뷰 조회 완료!",
+          reviews,
+        });
+      }
+      return res.status(404).json({
+        success: false,
+        message: "리뷰 조회 실패!",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
+  createReview: async (req, res) => {
+    try {
+      const { bookId } = req.params;
+      const { review, rating } = req.body;
+
+      await BookReview.create({
+        review,
+        rating,
+        bookId,
+      });
+      return res.status(201).json({
+        message: "리뷰 작성 성공!",
+        success: true,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+  deleteReview: async (req, res) => {
+    try {
+      const { id } = req.query;
+      await BookReview.destroy({ where: { id } });
+      return res.status(200).json({
+        success: true,
+        message: "리뷰 삭제 성공!",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
+  likeReview: async (req, res) => {
+    try {
+      const { bookId } = req.params;
+      const { userId } = req.body;
+      await BookReviewLike.findOrCreate({
+        where: { userId, bookId },
+      });
+      return res.status(200).json({
+        success: true,
+        message: "좋아요 성공!",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+  cancelLikeReview: async (req, res) => {
+    try {
+      const { bookId } = req.params;
+      const { userId } = req.body;
+      await BookReviewLike.destroy({
+        where: { userId, bookId },
+      });
+      return res.status(200).json({
+        success: true,
+        message: "좋아요 취소!",
       });
     } catch (error) {
       return res.status(500).json({
