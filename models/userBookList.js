@@ -26,6 +26,14 @@ const UserBookList = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
     },
+    startTime: {
+      type: DataTypes.DATE,
+      defaultValue: null,
+    },
+    endTime: {
+      type: DataTypes.DATE,
+      defaultValue: null,
+    },
   });
 };
 

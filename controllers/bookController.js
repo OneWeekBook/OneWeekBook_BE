@@ -85,17 +85,35 @@ const bookController = {
     try {
       const { isbn, userId, progress } = req.body;
       const isbn13 = isbn.split(" ")[1];
-      await UserBookList.update(
-        {
-          progress,
-        },
-        {
-          where: {
-            userId,
-            isbn: isbn13,
+      console.log(isbn, userId, progress, isbn13);
+      if (progress === 1) {
+        await UserBookList.update(
+          {
+            progress,
+            startTime: new Date(),
           },
-        }
-      );
+          {
+            where: {
+              userId,
+              isbn: isbn13,
+            },
+          }
+        );
+      }
+      if (progress === 2) {
+        await UserBookList.update(
+          {
+            progress,
+            endTime: new Date(),
+          },
+          {
+            where: {
+              userId,
+              isbn: isbn13,
+            },
+          }
+        );
+      }
       return res.status(200).json({
         success: true,
         message: "진행상태 변경완료!",
