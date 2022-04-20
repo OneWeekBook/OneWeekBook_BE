@@ -84,8 +84,6 @@ const bookController = {
   updateProgress: async (req, res) => {
     try {
       const { isbn, userId, progress } = req.body;
-      const isbn13 = isbn.split(" ")[1];
-      console.log(isbn, userId, progress, isbn13);
       if (progress === 1) {
         await UserBookList.update(
           {
@@ -95,7 +93,7 @@ const bookController = {
           {
             where: {
               userId,
-              isbn: isbn13,
+              isbn,
             },
           }
         );
@@ -109,7 +107,7 @@ const bookController = {
           {
             where: {
               userId,
-              isbn: isbn13,
+              isbn,
             },
           }
         );
