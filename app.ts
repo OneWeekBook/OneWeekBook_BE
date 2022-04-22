@@ -1,5 +1,6 @@
-const express = require("express");
-const app = express();
+// const express = require("express");
+import * as express from "express";
+const app: express.Application = express();
 const db = require("./models");
 const indexRouter = require("./routes");
 const logger = require("morgan");
