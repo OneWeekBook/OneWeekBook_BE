@@ -1,5 +1,6 @@
-const jwt = require("jsonwebtoken");
-const { secretKey } = require("../config/jwtConfig.json");
+import jwt from "jsonwebtoken";
+import { secretKey } from "../config/jwtConfig.json";
+
 const jwtModule = {
   create: (payload) => {
     //option을 아래와 같이 주려면 payload값이 {}형태여야 sign이 됨
@@ -31,4 +32,4 @@ const jwtModule = {
   },
 };
 
-module.exports = jwtModule;
+export default jwtModule;

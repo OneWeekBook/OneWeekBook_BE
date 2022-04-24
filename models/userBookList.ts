@@ -37,4 +37,4 @@ const UserBookList = (sequelize, DataTypes) => {
   });
 };
 
-module.exports = UserBookList;
+export default UserBookList;

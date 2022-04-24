@@ -1,4 +1,4 @@
-const { bookSearch } = require("../modules/bookModule");
+import { bookSearch } from "../modules/bookModule";
 
 const searchController = {
   search: async (req, res) => {
@@ -30,4 +30,4 @@ const searchController = {
   },
 };
 
-module.exports = searchController;
+export default searchController;

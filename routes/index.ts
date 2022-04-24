@@ -1,13 +1,14 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
 
-const userRouter = require("./user");
-const bookRouter = require("./book");
-const authRouter = require("./auth");
-const searchRouter = require("./search");
+import userRouter from "./user";
+import bookRouter from "./book";
+import authRouter from "./auth";
+import searchRouter from "./search";
 
 router.use("/user", userRouter);
 router.use("/book", bookRouter);
 router.use("/auth", authRouter);
 router.use("/search", searchRouter);
-module.exports = router;
+
+export default router;

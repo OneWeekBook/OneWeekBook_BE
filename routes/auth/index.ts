@@ -1,8 +1,8 @@
-const express = require("express");
+import express from "express";
+import { sendCode, authEmail } from "../../controllers/authController";
 const router = express.Router();
-const { sendCode, authEmail } = require("../../controllers/authController");
 
 router.post("/code", sendCode);
 router.post("/email", authEmail);
 
-module.exports = router;
+export default router;

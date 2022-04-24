@@ -1,5 +1,6 @@
-const { verify } = require("./jwtModule");
-const { User } = require("../models");
+import { verify } from "./jwtModule";
+import { User } from "../models";
+
 const authModule = {
   isLoggedIn: async (req, res, next) => {
     const accessToken = req.headers.authorization;
@@ -47,4 +48,4 @@ const authModule = {
   },
 };
 
-module.exports = authModule;
+export default authModule;

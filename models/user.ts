@@ -1,4 +1,12 @@
-const User = (sequelize, DataTypes) => {
+import { Model } from "sequelize";
+interface UserAttributes {
+  username: string;
+  email: string;
+  password: string;
+  nick: string;
+  role: number;
+}
+const User = (sequelize: any, DataTypes: any): UserAttributes => {
   return sequelize.define("user", {
     username: {
       type: DataTypes.STRING(30),
@@ -24,4 +32,4 @@ const User = (sequelize, DataTypes) => {
   });
 };
 
-module.exports = User;
+export default User;

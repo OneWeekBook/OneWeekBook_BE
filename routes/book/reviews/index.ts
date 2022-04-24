@@ -1,14 +1,15 @@
-const express = require("express");
-const router = express.Router();
-const {
+import express from "express";
+import {
   getAllReviews,
   getOneReviews,
   createReview,
   likeReview,
   cancelLikeReview,
   deleteReview,
-} = require("../../../controllers/bookController");
-const { isLoggedIn } = require("../../../modules/authModule");
+} from "../../../controllers/bookController";
+import { isLoggedIn } from "../../../modules/authModule";
+
+const router = express.Router();
 
 router.get("/", getAllReviews);
 router.get("/:bookId", getOneReviews);
@@ -17,4 +18,4 @@ router.post("/:bookId/like", isLoggedIn, likeReview);
 router.post("/:bookId/like/cancel", isLoggedIn, cancelLikeReview);
 router.delete("/", isLoggedIn, deleteReview);
 
-module.exports = router;
+export default router;

@@ -7,4 +7,4 @@ const BookParagraph = (sequelize, DataTypes) => {
   });
 };
 
-module.exports = BookParagraph;
+export default BookParagraph;

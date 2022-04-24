@@ -1,10 +1,10 @@
-const {
+import {
   Category,
   UserBookList,
   BookParagraph,
   BookReview,
   BookReviewLike,
-} = require("../models");
+} from "../models";
 
 const bookController = {
   getCategories: async (req, res) => {
@@ -324,4 +324,4 @@ const bookController = {
   },
 };
 
-module.exports = bookController;
+export default bookController;

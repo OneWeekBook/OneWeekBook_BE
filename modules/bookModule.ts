@@ -1,5 +1,5 @@
-const axios = require("axios");
-const { clientId, clientSecret } = require("../config/naverAPI.json");
+import axios from "axios";
+import { clientId, clientSecret } from "../config/naverAPI.json";
 
 const bookModule = {
   bookSearch: async (query) => {
@@ -39,4 +39,4 @@ const bookModule = {
   },
 };
 
-module.exports = bookModule;
+export default bookModule;

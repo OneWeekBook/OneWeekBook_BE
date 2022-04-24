@@ -12,4 +12,4 @@ const BookReview = (sequelize, DataTypes) => {
   });
 };
 
-module.exports = BookReview;
+export default BookReview;

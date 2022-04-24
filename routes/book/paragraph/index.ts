@@ -1,14 +1,15 @@
-const express = require("express");
-const router = express.Router();
-const { isLoggedIn } = require("../../../modules/authModule");
-const {
+import express from "express";
+import { isLoggedIn } from "../../../modules/authModule";
+import {
   getParagraphs,
   addParagraph,
   deleteParagraph,
-} = require("../../../controllers/bookController");
+} from "../../../controllers/bookController";
+
+const router = express.Router();
 
 router.get("/", isLoggedIn, getParagraphs);
 router.post("/", isLoggedIn, addParagraph);
 router.delete("/", isLoggedIn, deleteParagraph);
 
-module.exports = router;
+export default router;

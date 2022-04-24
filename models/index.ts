@@ -1,7 +1,14 @@
 "use strict";
 
-const { Sequelize, DataTypes, Op } = require("sequelize");
-const config = require("../config");
+import { Sequelize, DataTypes, Op } from "sequelize";
+import config from "../config";
+import user from "./user";
+import category from "./category";
+import userBookList from "./userBookList";
+import bookParagraph from "./bookParagraph";
+import bookReview from "./bookReview";
+import bookReviewLike from "./bookReviewLike";
+
 const db = {};
 const sequelize = new Sequelize(
   config.database,
@@ -12,12 +19,13 @@ const sequelize = new Sequelize(
 
 db.sequelize = sequelize; // app에서 sync해주기 위해서
 db.Sequelize = Sequelize;
-db.User = require("./user")(sequelize, DataTypes);
-db.Category = require("./category")(sequelize, DataTypes);
-db.UserBookList = require("./userBookList")(sequelize, DataTypes);
-db.BookParagraph = require("./bookParagraph")(sequelize, DataTypes);
-db.BookReview = require("./bookReview")(sequelize, DataTypes);
-db.BookReviewLike = require("./bookReviewLike")(sequelize);
+
+db.User = user(sequelize, DataTypes);
+db.Category = category(sequelize, DataTypes);
+db.UserBookList = userBookList(sequelize, DataTypes);
+db.BookParagraph = bookParagraph(sequelize, DataTypes);
+db.BookReview = bookReview(sequelize, DataTypes);
+db.BookReviewLike = bookReviewLike(sequelize);
 
 //source key는 왼쪽 db값의 값, target key는 오른쪽의 db값의 값
 db.User.hasMany(db.UserBookList, {
@@ -79,4 +87,4 @@ db.BookReviewLike.belongsTo(db.User, {
 
 db.Op = Op;
 
-module.exports = db;
+export default db;
