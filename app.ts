@@ -1,4 +1,3 @@
-// const express = require("express");
 import express, { Request, Response, NextFunction } from "express";
 const app: express.Application = express();
 import db from "./models";
@@ -6,6 +5,7 @@ import indexRouter from "./routes";
 import logger from "morgan";
 import cors from "cors";
 import "dotenv/config";
+import { Env } from "./types";
 
 (async () => {
   await db.sequelize.sync();
