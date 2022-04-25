@@ -270,6 +270,32 @@ const bookController = {
       });
     }
   },
+
+  updateReview: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { review, rating } = req.body;
+
+      await BookReview.update(
+        {
+          review,
+          rating,
+        },
+        { where: { id } }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "리뷰 수정 완료!",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
   deleteReview: async (req, res) => {
     try {
       const { id } = req.query;
