@@ -10,6 +10,7 @@ require("dotenv").config();
   await db.sequelize.sync();
   console.log("MariaDB Sync 완료!");
 })();
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
