@@ -312,7 +312,7 @@ const bookController = {
           success: true,
         });
       }
-      return res.status(201).json({
+      return res.status(409).json({
         message: "이미 리뷰가 존재합니다.",
         success: false,
       });
