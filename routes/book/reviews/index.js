@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {
   getAllReviews,
-  getOneReviews,
+  getOneBookReviews,
+  getOneReview,
   createReview,
   likeReview,
   cancelLikeReview,
@@ -12,7 +13,8 @@ const {
 const { isLoggedIn } = require("../../../modules/authModule");
 
 router.get("/", getAllReviews);
-router.get("/:bookId", getOneReviews);
+router.get("/:isbn", getOneBookReviews);
+router.get("/:bookId/:userId", getOneReview);
 router.post("/:bookId", isLoggedIn, createReview);
 router.post("/:bookId/like", isLoggedIn, likeReview);
 router.post("/:bookId/like/cancel", isLoggedIn, cancelLikeReview);

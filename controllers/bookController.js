@@ -4,6 +4,7 @@ const {
   BookParagraph,
   BookReview,
   BookReviewLike,
+  User,
 } = require("../models");
 
 const bookController = {
@@ -60,18 +61,25 @@ const bookController = {
     try {
       const { isbn, title, author, publisher, img, userId } = req.body;
       const isbn13 = isbn.split(" ")[1];
-      await UserBookList.create({
-        isbn: isbn13,
-        title,
-        author,
-        publisher,
-        img,
-        userId,
+      const [, created] = await UserBookList.findOrCreate({
+        where: {
+          isbn: isbn13,
+          title,
+          author,
+          publisher,
+          img,
+          userId,
+        },
       });
-
-      return res.status(201).json({
-        success: true,
-        message: "내 서재에 추가 완료!",
+      if (created) {
+        return res.status(201).json({
+          success: true,
+          message: "내 서재에 추가 완료!",
+        });
+      }
+      return res.status(409).json({
+        success: false,
+        message: "이미 찜한 책 입니다.",
       });
     } catch (error) {
       return res.status(500).json({
@@ -224,12 +232,14 @@ const bookController = {
     }
   },
 
-  getOneReviews: async (req, res) => {
+  getOneBookReviews: async (req, res) => {
     try {
-      console.log(req.params);
-      const { bookId } = req.params;
-      console.log(bookId);
-      const reviews = await BookReview.findAll({ where: { bookId } });
+      const { isbn } = req.params;
+      const reviews = await UserBookList.findAll({
+        include: [{ model: BookReview }],
+        attributes: [],
+        where: { isbn },
+      });
       if (reviews) {
         return res.status(200).json({
           success: true,
@@ -249,21 +259,65 @@ const bookController = {
     }
   },
 
+  getOneReview: async (req, res) => {
+    try {
+      const { bookId, userId } = req.params;
+      const review = await BookReview.findOne({
+        include: [
+          {
+            model: UserBookList,
+            include: [{ model: User, where: { id: userId } }],
+            where: { userId },
+          },
+        ],
+        where: {
+          bookId,
+        },
+      });
+      if (review) {
+        return res.status(200).json({
+          success: true,
+          message: "리뷰 조회 성공!",
+          review,
+        });
+      }
+      return res.status(404).json({
+        success: false,
+        message: "리뷰 조회 실패!",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
   createReview: async (req, res) => {
     try {
       const { bookId } = req.params;
       const { review, rating } = req.body;
-
-      await BookReview.create({
-        review,
-        rating,
-        bookId,
+      const [, created] = await BookReview.findOrCreate({
+        where: {
+          userBookListId: bookId,
+        },
+        defaults: {
+          review,
+          rating,
+        },
       });
+      if (created) {
+        return res.status(201).json({
+          message: "리뷰 작성 성공!",
+          success: true,
+        });
+      }
       return res.status(201).json({
-        message: "리뷰 작성 성공!",
-        success: true,
+        message: "이미 리뷰가 존재합니다.",
+        success: false,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         success: false,
         message: "DB서버 에러!",

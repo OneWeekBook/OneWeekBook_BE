@@ -31,16 +31,11 @@ db.UserBookList.belongsTo(db.User, {
   targetKey: "id",
 });
 
-db.UserBookList.hasMany(db.BookReview, {
-  foreignKey: "bookId",
-  sourceKey: "id",
+db.UserBookList.hasOne(db.BookReview, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
-db.BookReview.belongsTo(db.UserBookList, {
-  foreignKey: "bookId",
-  targetKey: "id",
-});
+db.BookReview.belongsTo(db.UserBookList);
 
 db.UserBookList.hasMany(db.BookParagraph, {
   foreignKey: "bookId",
