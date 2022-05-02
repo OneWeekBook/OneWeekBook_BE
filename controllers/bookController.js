@@ -2,11 +2,11 @@ const {
   Category,
   UserBookList,
   BookParagraph,
-  BookReview,
   BookReviewLike,
   User,
+  Op,
+  sequelize,
 } = require("../models");
-
 const bookController = {
   getCategories: async (req, res) => {
     try {
@@ -211,18 +211,29 @@ const bookController = {
   },
 
   getAllReviews: async (req, res) => {
+    const { start, display, sortby } = req.query;
+    let sort_value = "createdAt";
+    if (sortby === "recommend") {
+      sort_value = "recommend";
+    }
     try {
-      const reviews = await BookReview.findAll();
-      if (reviews) {
-        return res.status(200).json({
-          success: true,
-          message: "리뷰 조회 완료!",
-          reviews,
-        });
-      }
-      return res.status(404).json({
-        success: false,
-        message: "리뷰 조회 실패!",
+      const reviews = await UserBookList.findAndCountAll({
+        where: {
+          review: {
+            [Op.ne]: null,
+          },
+        },
+        group: ["isbn"],
+        attributes: {
+          exclude: ["userId", "review", "rating"],
+        },
+        offset: parseInt(start) || 0,
+        limit: parseInt(display) || 10,
+      });
+      return res.status(200).json({
+        success: true,
+        message: "리뷰 조회 성공!",
+        reviews,
       });
     } catch (error) {
       return res.status(500).json({
@@ -266,12 +277,18 @@ const bookController = {
         include: [
           {
             model: UserBookList,
-            include: [{ model: User, where: { id: userId } }],
+            include: [
+              {
+                model: User,
+                where: { id: userId },
+                attributes: { exclude: ["password"] },
+              },
+            ],
             where: { userId },
           },
         ],
         where: {
-          bookId,
+          userBookListId: bookId,
         },
       });
       if (review) {
@@ -283,7 +300,7 @@ const bookController = {
       }
       return res.status(404).json({
         success: false,
-        message: "리뷰 조회 실패!",
+        message: "조회할 리뷰가 없습니다.",
       });
     } catch (error) {
       return res.status(500).json({
@@ -297,27 +314,32 @@ const bookController = {
     try {
       const { bookId } = req.params;
       const { review, rating } = req.body;
-      const [, created] = await BookReview.findOrCreate({
-        where: {
-          userBookListId: bookId,
-        },
-        defaults: {
+
+      const book = await UserBookList.findOne({
+        where: { id: bookId },
+      });
+      if (book.review) {
+        return res.status(409).json({
+          message: "이미 리뷰가 존재합니다.",
+          success: false,
+        });
+      }
+      await UserBookList.update(
+        {
           review,
           rating,
         },
-      });
-      if (created) {
-        return res.status(201).json({
-          message: "리뷰 작성 성공!",
-          success: true,
-        });
-      }
-      return res.status(409).json({
-        message: "이미 리뷰가 존재합니다.",
-        success: false,
+        {
+          where: {
+            id: bookId,
+          },
+        }
+      );
+      return res.status(201).json({
+        message: "리뷰 작성 성공!",
+        success: true,
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({
         success: false,
         message: "DB서버 에러!",
@@ -327,17 +349,9 @@ const bookController = {
 
   updateReview: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { bookId } = req.params;
       const { review, rating } = req.body;
-
-      await BookReview.update(
-        {
-          review,
-          rating,
-        },
-        { where: { id } }
-      );
-
+      await UserBookList.update({ review, rating }, { where: { id: bookId } });
       return res.status(200).json({
         success: true,
         message: "리뷰 수정 완료!",
@@ -352,13 +366,17 @@ const bookController = {
 
   deleteReview: async (req, res) => {
     try {
-      const { id } = req.query;
-      await BookReview.destroy({ where: { id } });
+      const { bookId } = req.params;
+      await UserBookList.update(
+        { review: null, rating: 0.0 },
+        { where: { id: bookId } }
+      );
       return res.status(200).json({
         success: true,
         message: "리뷰 삭제 성공!",
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         success: false,
         message: "DB서버 에러!",
@@ -369,13 +387,24 @@ const bookController = {
   likeReview: async (req, res) => {
     try {
       const { bookId } = req.params;
-      const { userId } = req.body;
-      await BookReviewLike.findOrCreate({
-        where: { userId, bookId },
+      const { state, userId } = req.body;
+      const [, created] = await BookReviewLike.findOrCreate({
+        where: { userId, userBookListId: bookId },
+        defaults: {
+          state,
+          userBookListId: bookId,
+          userId,
+        },
       });
-      return res.status(200).json({
-        success: true,
-        message: "좋아요 성공!",
+      if (created) {
+        return res.status(200).json({
+          success: true,
+          message: "좋아요 성공!",
+        });
+      }
+      return res.status(409).json({
+        success: false,
+        message: "이미 좋아하는 리뷰입니다.",
       });
     } catch (error) {
       return res.status(500).json({
@@ -388,12 +417,18 @@ const bookController = {
     try {
       const { bookId } = req.params;
       const { userId } = req.body;
-      await BookReviewLike.destroy({
-        where: { userId, bookId },
+      const result = await BookReviewLike.destroy({
+        where: { userId, userBookListId: bookId },
       });
-      return res.status(200).json({
-        success: true,
-        message: "좋아요 취소!",
+      if (result) {
+        return res.status(200).json({
+          success: true,
+          message: "좋아요 취소!",
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        message: "이 게시물을 좋아하지 않습니다.",
       });
     } catch (error) {
       return res.status(500).json({

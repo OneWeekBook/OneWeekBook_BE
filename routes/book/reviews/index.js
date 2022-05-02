@@ -18,7 +18,7 @@ router.get("/:bookId/:userId", getOneReview);
 router.post("/:bookId", isLoggedIn, createReview);
 router.post("/:bookId/like", isLoggedIn, likeReview);
 router.post("/:bookId/like/cancel", isLoggedIn, cancelLikeReview);
-router.put("/:id", isLoggedIn, updateReview);
-router.delete("/", isLoggedIn, deleteReview);
+router.put("/:bookId", isLoggedIn, updateReview);
+router.delete("/:bookId", isLoggedIn, deleteReview);
 
 module.exports = router;

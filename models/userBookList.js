@@ -34,6 +34,14 @@ const UserBookList = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: null,
     },
+    review: {
+      type: DataTypes.TEXT,
+      defaultValue: null,
+    },
+    rating: {
+      type: DataTypes.DECIMAL(2, 1),
+      defaultValue: 0,
+    },
   });
 };
 

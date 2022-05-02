@@ -16,8 +16,7 @@ db.User = require("./user")(sequelize, DataTypes);
 db.Category = require("./category")(sequelize, DataTypes);
 db.UserBookList = require("./userBookList")(sequelize, DataTypes);
 db.BookParagraph = require("./bookParagraph")(sequelize, DataTypes);
-db.BookReview = require("./bookReview")(sequelize, DataTypes);
-db.BookReviewLike = require("./bookReviewLike")(sequelize);
+db.BookReviewLike = require("./bookReviewLike")(sequelize, DataTypes);
 
 //source key는 왼쪽 db값의 값, target key는 오른쪽의 db값의 값
 db.User.hasMany(db.UserBookList, {
@@ -31,12 +30,6 @@ db.UserBookList.belongsTo(db.User, {
   targetKey: "id",
 });
 
-db.UserBookList.hasOne(db.BookReview, {
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-db.BookReview.belongsTo(db.UserBookList);
-
 db.UserBookList.hasMany(db.BookParagraph, {
   foreignKey: "bookId",
   sourceKey: "id",
@@ -48,15 +41,15 @@ db.BookParagraph.belongsTo(db.UserBookList, {
   targetKey: "id",
 });
 
-db.BookReview.hasMany(db.BookReviewLike, {
-  foreignKey: "bookId",
+db.UserBookList.hasMany(db.BookReviewLike, {
+  foreignKey: "userBookListId",
   sourceKey: "id",
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
 });
 
-db.BookReviewLike.belongsTo(db.BookReview, {
-  foreignKey: "bookId",
+db.BookReviewLike.belongsTo(db.UserBookList, {
+  foreignKey: "userBookListId",
   targetKey: "id",
 });
 
@@ -73,5 +66,6 @@ db.BookReviewLike.belongsTo(db.User, {
 });
 
 db.Op = Op;
+db.sequelize = sequelize;
 
 module.exports = db;
