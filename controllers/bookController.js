@@ -225,10 +225,20 @@ const bookController = {
         },
         group: ["isbn"],
         attributes: {
-          exclude: ["userId", "review", "rating"],
+          exclude: [
+            "userId",
+            "review",
+            "rating",
+            "progress",
+            "startTime",
+            "endTime",
+            "createdAt",
+            "updatedAt",
+          ],
         },
         offset: parseInt(start) || 0,
         limit: parseInt(display) || 10,
+        order: [[sort_value, "DESC"]],
       });
       return res.status(200).json({
         success: true,
@@ -246,16 +256,24 @@ const bookController = {
   getOneBookReviews: async (req, res) => {
     try {
       const { isbn } = req.params;
-      const reviews = await UserBookList.findAll({
-        include: [{ model: BookReview }],
-        attributes: [],
-        where: { isbn },
+      const callProcedure = `
+        call getonebookreviews(:isbn);
+      `;
+      const queryResults = await sequelize.query(callProcedure, {
+        replacements: { isbn },
+        type: sequelize.QueryTypes.SELECT,
       });
-      if (reviews) {
+      for (const i of queryResults) {
+        delete i.meta;
+      }
+      const results = queryResults.filter(
+        (item, idx) => !("affectedRows" in item)
+      );
+      if (results) {
         return res.status(200).json({
           success: true,
           message: "리뷰 조회 완료!",
-          reviews,
+          results,
         });
       }
       return res.status(404).json({
@@ -263,6 +281,7 @@ const bookController = {
         message: "리뷰 조회 실패!",
       });
     } catch (error) {
+      console.error(error);
       return res.status(500).json({
         success: false,
         message: "DB서버 에러!",
