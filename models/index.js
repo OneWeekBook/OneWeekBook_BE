@@ -1,7 +1,13 @@
 "use strict";
 
-const { Sequelize, DataTypes, Op } = require("sequelize");
+const { Sequelize, Op } = require("sequelize");
 const config = require("../config");
+const User = require("./user");
+const Category = require("./category");
+const UserBookList = require("./userBookList");
+const BookParagraph = require("./bookParagraph");
+const BookReviewLike = require("./bookReviewLike");
+
 const db = {};
 const sequelize = new Sequelize(
   config.database,
@@ -11,61 +17,23 @@ const sequelize = new Sequelize(
 );
 
 db.sequelize = sequelize; // app에서 sync해주기 위해서
-db.Sequelize = Sequelize;
-db.User = require("./user")(sequelize, DataTypes);
-db.Category = require("./category")(sequelize, DataTypes);
-db.UserBookList = require("./userBookList")(sequelize, DataTypes);
-db.BookParagraph = require("./bookParagraph")(sequelize, DataTypes);
-db.BookReviewLike = require("./bookReviewLike")(sequelize, DataTypes);
+db.User = User;
+db.Category = Category;
+db.UserBookList = UserBookList;
+db.BookParagraph = BookParagraph;
+db.BookReviewLike = BookReviewLike;
 
-//source key는 왼쪽 db값의 값, target key는 오른쪽의 db값의 값
-db.User.hasMany(db.UserBookList, {
-  foreignKey: "userId",
-  sourceKey: "id", //왼쪽(user) db의 id값
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-db.UserBookList.belongsTo(db.User, {
-  foreignKey: "userId",
-  targetKey: "id",
-});
+User.init(sequelize);
+Category.init(sequelize);
+UserBookList.init(sequelize);
+BookParagraph.init(sequelize);
+BookReviewLike.init(sequelize);
 
-db.UserBookList.hasMany(db.BookParagraph, {
-  foreignKey: "bookId",
-  sourceKey: "id",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-db.BookParagraph.belongsTo(db.UserBookList, {
-  foreignKey: "bookId",
-  targetKey: "id",
-});
-
-db.UserBookList.hasMany(db.BookReviewLike, {
-  foreignKey: "userBookListId",
-  sourceKey: "id",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-
-db.BookReviewLike.belongsTo(db.UserBookList, {
-  foreignKey: "userBookListId",
-  targetKey: "id",
-});
-
-db.User.hasMany(db.BookReviewLike, {
-  foreignKey: "userId",
-  sourceKey: "id",
-  onDelete: "CASCADE",
-  onUpdate: "CASCADE",
-});
-
-db.BookReviewLike.belongsTo(db.User, {
-  foreignKey: "userId",
-  targetKey: "id",
-});
+User.associate(db);
+UserBookList.associate(db);
+BookParagraph.associate(db);
+BookReviewLike.associate(db);
 
 db.Op = Op;
-db.sequelize = sequelize;
 
 module.exports = db;

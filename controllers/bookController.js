@@ -292,22 +292,16 @@ const bookController = {
   getOneReview: async (req, res) => {
     try {
       const { bookId, userId } = req.params;
-      const review = await BookReview.findOne({
+      const review = await UserBookList.findOne({
         include: [
           {
-            model: UserBookList,
-            include: [
-              {
-                model: User,
-                where: { id: userId },
-                attributes: { exclude: ["password"] },
-              },
-            ],
-            where: { userId },
+            model: User,
+            where: { id: userId },
+            attributes: { exclude: ["password"] },
           },
         ],
         where: {
-          userBookListId: bookId,
+          id: bookId,
         },
       });
       if (review) {
