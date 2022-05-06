@@ -7,6 +7,7 @@ const {
   Op,
   sequelize,
 } = require("../models");
+const { procedureParsing } = require("../modules/procedureParsing");
 const bookController = {
   getCategories: async (req, res) => {
     try {
@@ -263,12 +264,7 @@ const bookController = {
         replacements: { isbn },
         type: sequelize.QueryTypes.SELECT,
       });
-      for (const i of queryResults) {
-        delete i.meta;
-      }
-      const results = queryResults.filter(
-        (item, idx) => !("affectedRows" in item)
-      );
+      const results = procedureParsing(queryResults);
       if (results) {
         return res.status(200).json({
           success: true,
