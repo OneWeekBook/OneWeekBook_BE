@@ -1,40 +1,84 @@
-const UserBookList = (sequelize, DataTypes) => {
-  return sequelize.define("userBookList", {
-    title: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    author: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    publisher: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    img: {
-      type: DataTypes.STRING(100),
-      allowNull: true,
-      defaultValue: null,
-    },
-    isbn: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    },
-    progress: {
-      type: DataTypes.INTEGER(1), // 0:찜, 1:읽는중 2:읽기완료
-      allowNull: false,
-      defaultValue: 0,
-    },
-    startTime: {
-      type: DataTypes.DATE,
-      defaultValue: null,
-    },
-    endTime: {
-      type: DataTypes.DATE,
-      defaultValue: null,
-    },
-  });
-};
+const Sequelize = require("sequelize");
 
+<<<<<<< HEAD:models/userBookList.ts
 export default UserBookList;
+=======
+class UserBookList extends Sequelize.Model {
+  static init(sequelize) {
+    return super.init(
+      {
+        title: {
+          type: Sequelize.STRING(100),
+          allowNull: false,
+        },
+        author: {
+          type: Sequelize.STRING(100),
+          allowNull: false,
+        },
+        publisher: {
+          type: Sequelize.STRING(100),
+          allowNull: false,
+        },
+        img: {
+          type: Sequelize.STRING(100),
+          allowNull: true,
+          defaultValue: null,
+        },
+        isbn: {
+          type: Sequelize.STRING(100),
+          allowNull: false,
+        },
+        progress: {
+          type: Sequelize.INTEGER(1), // 0:찜, 1:읽는중 2:읽기완료
+          allowNull: false,
+          defaultValue: 0,
+        },
+        startTime: {
+          type: Sequelize.DATE,
+          defaultValue: null,
+        },
+        endTime: {
+          type: Sequelize.DATE,
+          defaultValue: null,
+        },
+        review: {
+          type: Sequelize.TEXT,
+          defaultValue: null,
+        },
+        rating: {
+          type: Sequelize.DECIMAL(2, 1),
+          defaultValue: 0,
+        },
+      },
+      {
+        sequelize,
+        modelName: "UserBookList",
+        charset: "utf8",
+        collate: "utf8_general_ci",
+      }
+    );
+  }
+
+  static associate(db) {
+    db.UserBookList.belongsTo(db.User, {
+      foreignKey: "userId",
+      targetKey: "id",
+    });
+
+    db.UserBookList.hasMany(db.BookParagraph, {
+      foreignKey: "bookId",
+      sourceKey: "id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+
+    db.UserBookList.hasMany(db.BookReviewLike, {
+      foreignKey: "userBookListId",
+      sourceKey: "id",
+      onDelete: "CASCADE",
+      onUpdate: "CASCADE",
+    });
+  }
+}
+module.exports = UserBookList;
+>>>>>>> 957033c197ed2d82cf1a393d2a79ae6b4fcda445:models/userBookList.js

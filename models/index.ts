@@ -1,5 +1,6 @@
 "use strict";
 
+<<<<<<< HEAD:models/index.ts
 import { Sequelize, DataTypes, Op } from "sequelize";
 import config from "../config";
 import user from "./user";
@@ -8,6 +9,15 @@ import userBookList from "./userBookList";
 import bookParagraph from "./bookParagraph";
 import bookReview from "./bookReview";
 import bookReviewLike from "./bookReviewLike";
+=======
+const { Sequelize, Op } = require("sequelize");
+const config = require("../config");
+const User = require("./user");
+const Category = require("./category");
+const UserBookList = require("./userBookList");
+const BookParagraph = require("./bookParagraph");
+const BookReviewLike = require("./bookReviewLike");
+>>>>>>> 957033c197ed2d82cf1a393d2a79ae6b4fcda445:models/index.js
 
 const db = {};
 const sequelize = new Sequelize(
@@ -18,6 +28,7 @@ const sequelize = new Sequelize(
 );
 
 db.sequelize = sequelize; // app에서 sync해주기 위해서
+<<<<<<< HEAD:models/index.ts
 db.Sequelize = Sequelize;
 
 db.User = user(sequelize, DataTypes);
@@ -84,6 +95,24 @@ db.BookReviewLike.belongsTo(db.User, {
   foreignKey: "userId",
   targetKey: "id",
 });
+=======
+db.User = User;
+db.Category = Category;
+db.UserBookList = UserBookList;
+db.BookParagraph = BookParagraph;
+db.BookReviewLike = BookReviewLike;
+
+User.init(sequelize);
+Category.init(sequelize);
+UserBookList.init(sequelize);
+BookParagraph.init(sequelize);
+BookReviewLike.init(sequelize);
+
+User.associate(db);
+UserBookList.associate(db);
+BookParagraph.associate(db);
+BookReviewLike.associate(db);
+>>>>>>> 957033c197ed2d82cf1a393d2a79ae6b4fcda445:models/index.js
 
 db.Op = Op;
 
