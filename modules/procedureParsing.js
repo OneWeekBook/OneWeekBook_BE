@@ -38,7 +38,7 @@ exports.procedureParsing = (procedureResults) => {
         };
         break;
       default:
-        break;
+        return returnObject;
     }
   }
   return returnObject;
