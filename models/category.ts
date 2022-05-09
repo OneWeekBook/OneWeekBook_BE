@@ -33,4 +33,4 @@ class Category extends Sequelize.Model {
   }
 }
 
-module.exports = Category;
+export default Category;

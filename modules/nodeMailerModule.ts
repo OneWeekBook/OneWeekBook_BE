@@ -1,10 +1,10 @@
-const nodemailer = require("nodemailer");
-const {
+import nodemailer from "nodemailer";
+import {
   senderEmail,
   senderPassword,
   service,
   host,
-} = require("../config/nodeMailerConfig.json");
+} from "../config/nodeMailerConfig.json";
 
 const nodeMailerModule = {
   sendEmail: async (email, code) => {
@@ -39,4 +39,4 @@ const nodeMailerModule = {
   },
 };
 
-module.exports = nodeMailerModule;
+export default nodeMailerModule;

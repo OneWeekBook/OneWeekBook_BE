@@ -1,5 +1,8 @@
 const Sequelize = require("sequelize");
 
+<<<<<<< HEAD:models/userBookList.ts
+export default UserBookList;
+=======
 class UserBookList extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
@@ -78,3 +81,4 @@ class UserBookList extends Sequelize.Model {
   }
 }
 module.exports = UserBookList;
+>>>>>>> 957033c197ed2d82cf1a393d2a79ae6b4fcda445:models/userBookList.js

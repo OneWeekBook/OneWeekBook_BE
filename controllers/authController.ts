@@ -1,7 +1,7 @@
-const { sendEmail } = require("../modules/nodeMailerModule");
-let codeNumber = "";
-let ing = false; // 인증 시간이 진행중인지 확인변수
-let timer = null;
+import { sendEmail } from "../modules/nodeMailerModule";
+let codeNumber: string = "";
+let ing: boolean = false; // 인증 시간이 진행중인지 확인변수
+let timer: ReturnType<typeof setTimeout>;
 
 const authController = {
   sendCode: (req, res) => {
@@ -59,4 +59,4 @@ const authController = {
   },
 };
 
-module.exports = authController;
+export default authController;

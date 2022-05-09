@@ -1,8 +1,8 @@
-const bcrypt = require("bcrypt");
-const { saltRounds } = require("../config/bcryptConfig.json");
-const salt = parseInt(saltRounds);
+import bcrypt from "bcrypt";
+import { saltRounds } from "../config/bcryptConfig.json";
+const salt: number = parseInt(saltRounds);
 const bcryptModule = {
-  compare: async (inputPassword, dbPassword) => {
+  compare: async (inputPassword: string, dbPassword: string) => {
     try {
       const passwordTrueFalse = await bcrypt.compare(inputPassword, dbPassword);
       return {
@@ -13,7 +13,7 @@ const bcryptModule = {
       return { success: false };
     }
   },
-  hash: async (inputPassword) => {
+  hash: async (inputPassword: string) => {
     try {
       const hash = await bcrypt.hash(inputPassword, salt);
       return {
@@ -26,4 +26,4 @@ const bcryptModule = {
   },
 };
 
-module.exports = bcryptModule;
+export default bcryptModule;

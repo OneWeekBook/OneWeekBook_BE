@@ -1,6 +1,6 @@
-const { compare, hash } = require("../modules/bcryptModule");
-const { create } = require("../modules/jwtModule");
-const { User } = require("../models");
+import { compare, hash } from "../modules/bcryptModule";
+import { create } from "../modules/jwtModule";
+import { User } from "../models";
 
 const userController = {
   login: async (req, res) => {
@@ -202,4 +202,4 @@ const userController = {
   },
 };
 
-module.exports = userController;
+export default userController;

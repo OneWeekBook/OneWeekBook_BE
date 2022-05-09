@@ -26,4 +26,4 @@ class BookParagraph extends Sequelize.Model {
   }
 }
 
-module.exports = BookParagraph;
+export default BookParagraph;

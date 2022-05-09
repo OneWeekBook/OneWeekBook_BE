@@ -1,3 +1,38 @@
+<<<<<<< HEAD:models/user.ts
+import { Model } from "sequelize";
+interface UserAttributes {
+  username: string;
+  email: string;
+  password: string;
+  nick: string;
+  role: number;
+}
+const User = (sequelize: any, DataTypes: any): UserAttributes => {
+  return sequelize.define("user", {
+    username: {
+      type: DataTypes.STRING(30),
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
+    nick: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
+    },
+    role: {
+      type: DataTypes.INTEGER(2),
+      defaultValue: 1, //0: 관리자, 1: 새싹, 2: 떡잎,
+    },
+  });
+};
+=======
 const Sequelize = require("sequelize");
 
 class User extends Sequelize.Model {
@@ -52,5 +87,6 @@ class User extends Sequelize.Model {
     });
   }
 }
+>>>>>>> 957033c197ed2d82cf1a393d2a79ae6b4fcda445:models/user.js
 
-module.exports = User;
+export default User;

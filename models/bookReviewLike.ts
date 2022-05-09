@@ -31,4 +31,4 @@ class BookReviewLike extends Sequelize.Model {
   }
 }
 
-module.exports = BookReviewLike;
+export default BookReviewLike;

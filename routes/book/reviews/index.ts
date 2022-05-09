@@ -1,6 +1,5 @@
-const express = require("express");
-const router = express.Router();
-const {
+import express from "express";
+import {
   getAllReviews,
   getOneBookReviews,
   getOneReview,
@@ -8,9 +7,16 @@ const {
   likeReview,
   cancelLikeReview,
   deleteReview,
+<<<<<<< HEAD:routes/book/reviews/index.ts
+} from "../../../controllers/bookController";
+import { isLoggedIn } from "../../../modules/authModule";
+
+const router = express.Router();
+=======
   updateReview,
 } = require("../../../controllers/bookController");
 const { isLoggedIn } = require("../../../modules/authModule");
+>>>>>>> 957033c197ed2d82cf1a393d2a79ae6b4fcda445:routes/book/reviews/index.js
 
 router.get("/", getAllReviews);
 router.get("/:isbn", getOneBookReviews);
@@ -21,4 +27,4 @@ router.post("/:bookId/like/cancel", isLoggedIn, cancelLikeReview);
 router.put("/:bookId", isLoggedIn, updateReview);
 router.delete("/:bookId", isLoggedIn, deleteReview);
 
-module.exports = router;
+export default router;
