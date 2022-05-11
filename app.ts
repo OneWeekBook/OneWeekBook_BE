@@ -1,4 +1,3 @@
-<<<<<<< HEAD:app.ts
 import express, { Request, Response, NextFunction } from "express";
 const app: express.Application = express();
 import db from "./models";
@@ -6,17 +5,9 @@ import indexRouter from "./routes";
 import logger from "morgan";
 import cors from "cors";
 import "dotenv/config";
+import helmet from "helmet";
+
 import { Env } from "./types";
-=======
-const express = require("express");
-const app = express();
-const db = require("./models");
-const indexRouter = require("./routes");
-const logger = require("morgan");
-const cors = require("cors");
-const helmet = require("helmet");
-require("dotenv").config();
->>>>>>> 957033c197ed2d82cf1a393d2a79ae6b4fcda445:app.js
 
 (async () => {
   await db.sequelize.sync();
@@ -36,8 +27,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-const port: number = parseInt(process.env.PORT);
-
-app.listen(port || 4040, () => {
-  console.log(`${port}server on...`);
+app.listen(process.env.PORT || 4040, () => {
+  console.log(`${process.env.PORT || 4040}server on...`);
 });

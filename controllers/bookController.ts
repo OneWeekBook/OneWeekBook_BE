@@ -3,16 +3,11 @@ import {
   UserBookList,
   BookParagraph,
   BookReviewLike,
-<<<<<<< HEAD:controllers/bookController.ts
-} from "../models";
-
-=======
   User,
   Op,
   sequelize,
-} = require("../models");
+} from "../models";
 const { procedureParsing } = require("../modules/procedureParsing");
->>>>>>> 957033c197ed2d82cf1a393d2a79ae6b4fcda445:controllers/bookController.js
 const bookController = {
   getCategories: async (req, res) => {
     try {
