@@ -1,11 +1,13 @@
 import { compare, hash } from "../modules/bcryptModule";
 import { create } from "../modules/jwtModule";
 import { User } from "../models";
+import { Request, Response } from "express";
+import { LoginBody } from "../types/controllers/userController.types";
 
 const userController = {
-  login: async (req, res) => {
-    const { email, password } = req.body;
-    let user = null;
+  login: async (req: Request, res: Response) => {
+    const { email, password }: LoginBody = req.body;
+    let user: object;
     try {
       user = await User.findOne({ where: { email } });
     } catch (error) {
@@ -44,7 +46,7 @@ const userController = {
       message: "유저가 존재하지 않습니다.",
     });
   },
-  register: async (req, res) => {
+  register: async (req: Request, res: Response) => {
     const { email, username, password, nick } = req.body;
     let fUser = null;
     try {
@@ -89,7 +91,7 @@ const userController = {
     });
   },
 
-  getUser: (req, res) => {
+  getUser: (req: Request, res: Response) => {
     if (!req.user) {
       return res.status(404).json({
         success: false,
@@ -103,7 +105,7 @@ const userController = {
     });
   },
 
-  newPassword: async (req, res) => {
+  newPassword: async (req: Request, res: Response) => {
     const { email, password } = req.body;
     let fUser;
     try {
@@ -143,7 +145,7 @@ const userController = {
       });
     }
   },
-  deleteUser: async (req, res) => {
+  deleteUser: async (req: Request, res: Response) => {
     const { password, id } = req.body;
     try {
       const user = await User.findOne({ where: { id } });
@@ -185,7 +187,7 @@ const userController = {
       });
     }
   },
-  updateNick: async (req, res) => {
+  updateNick: async (req: Request, res: Response) => {
     const { nick, id } = req.body;
     try {
       await User.update({ nick }, { where: { id } });
