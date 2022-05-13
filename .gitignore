@@ -2,4 +2,8 @@
 .env
 .txt
 config
+<<<<<<< HEAD
 test
+=======
+test
+>>>>>>> 86ea0c07c1e7f1447ca1bc152eacc0a3d99a78c4
