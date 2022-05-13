@@ -1,7 +1,6 @@
 "use strict";
 
 const { Sequelize, Op } = require("sequelize");
-const config = require("../config");
 const User = require("./user");
 const Category = require("./category");
 const UserBookList = require("./userBookList");
@@ -9,12 +8,6 @@ const BookParagraph = require("./bookParagraph");
 const BookReviewLike = require("./bookReviewLike");
 
 const db = {};
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config
-);
 
 db.sequelize = sequelize; // app에서 sync해주기 위해서
 db.User = User;
