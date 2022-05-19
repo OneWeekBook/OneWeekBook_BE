@@ -13,11 +13,11 @@ const jwtModule = {
     const token = jwt.sign(payload, secretKey, option);
     return token;
   },
-  verify: (token) => {
+  verify: (token: string) => {
     try {
       const decode = jwt.verify(token, secretKey);
       return decode;
-    } catch (error) {
+    } catch (error: Error) {
       if (error.name === "TokenExpiredError") {
         console.log("expired token");
         return -1;

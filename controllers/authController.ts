@@ -1,10 +1,11 @@
+import { Request, Response } from "express";
 import { sendEmail } from "../modules/nodeMailerModule";
 let codeNumber: string = "";
 let ing: boolean = false; // 인증 시간이 진행중인지 확인변수
 let timer: ReturnType<typeof setTimeout>;
 
 const authController = {
-  sendCode: (req, res) => {
+  sendCode: (req: Request, res: Response) => {
     if (ing) {
       return res.status(400).json({
         success: false,
@@ -33,7 +34,7 @@ const authController = {
     });
   },
 
-  authEmail: (req, res) => {
+  authEmail: (req: Request, res: Response) => {
     if (!ing) {
       codeNumber = "";
       return res.status(408).json({

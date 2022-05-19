@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import {
   Category,
   UserBookList,
@@ -7,7 +8,7 @@ import {
 } from "../models";
 
 const bookController = {
-  getCategories: async (req, res) => {
+  getCategories: async (req: Request, res: Response) => {
     try {
       const categories = await Category.findAll();
       if (categories) {
@@ -28,7 +29,7 @@ const bookController = {
       });
     }
   },
-  getMyList: async (req, res) => {
+  getMyList: async (req: Request, res: Response) => {
     try {
       const { userId, progress } = req.query;
       const myList = await UserBookList.findAll({
@@ -56,7 +57,7 @@ const bookController = {
     }
   },
 
-  addMyList: async (req, res) => {
+  addMyList: async (req: Request, res: Response) => {
     try {
       const { isbn, title, author, publisher, img, userId } = req.body;
       const isbn13 = isbn.split(" ")[1];
@@ -81,7 +82,7 @@ const bookController = {
     }
   },
 
-  updateProgress: async (req, res) => {
+  updateProgress: async (req: Request, res: Response) => {
     try {
       const { isbn, userId, progress } = req.body;
       if (progress === 1) {
@@ -124,7 +125,7 @@ const bookController = {
     }
   },
 
-  deleteMyList: async (req, res) => {
+  deleteMyList: async (req: Request, res: Response) => {
     try {
       const { id } = req.query;
       await UserBookList.destroy({
@@ -142,7 +143,7 @@ const bookController = {
     }
   },
 
-  getParagraphs: async (req, res) => {
+  getParagraphs: async (req: Request, res: Response) => {
     try {
       const { bookId } = req.query;
       const paragraphs = await BookParagraph.findAll({ where: { bookId } });
@@ -165,7 +166,7 @@ const bookController = {
     }
   },
 
-  addParagraph: async (req, res) => {
+  addParagraph: async (req: Request, res: Response) => {
     try {
       const { paragraph, bookId } = req.body;
       await BookParagraph.create({
@@ -184,7 +185,7 @@ const bookController = {
     }
   },
 
-  deleteParagraph: async (req, res) => {
+  deleteParagraph: async (req: Request, res: Response) => {
     try {
       const { id } = req.query;
       await BookParagraph.destroy({
@@ -202,7 +203,7 @@ const bookController = {
     }
   },
 
-  getAllReviews: async (req, res) => {
+  getAllReviews: async (req: Request, res: Response) => {
     try {
       const reviews = await BookReview.findAll();
       if (reviews) {
@@ -224,7 +225,7 @@ const bookController = {
     }
   },
 
-  getOneReviews: async (req, res) => {
+  getOneReviews: async (req: Request, res: Response) => {
     try {
       console.log(req.params);
       const { bookId } = req.params;
@@ -249,7 +250,7 @@ const bookController = {
     }
   },
 
-  createReview: async (req, res) => {
+  createReview: async (req: Request, res: Response) => {
     try {
       const { bookId } = req.params;
       const { review, rating } = req.body;
@@ -270,7 +271,7 @@ const bookController = {
       });
     }
   },
-  deleteReview: async (req, res) => {
+  deleteReview: async (req: Request, res: Response) => {
     try {
       const { id } = req.query;
       await BookReview.destroy({ where: { id } });
@@ -286,7 +287,7 @@ const bookController = {
     }
   },
 
-  likeReview: async (req, res) => {
+  likeReview: async (req: Request, res: Response) => {
     try {
       const { bookId } = req.params;
       const { userId } = req.body;
@@ -304,7 +305,7 @@ const bookController = {
       });
     }
   },
-  cancelLikeReview: async (req, res) => {
+  cancelLikeReview: async (req: Request, res: Response) => {
     try {
       const { bookId } = req.params;
       const { userId } = req.body;

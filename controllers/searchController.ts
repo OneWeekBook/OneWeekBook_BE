@@ -1,7 +1,8 @@
 import { bookSearch } from "../modules/bookModule";
+import { Request, Response } from "express";
 
 const searchController = {
-  search: async (req, res) => {
+  search: async (req: Request, res: Response) => {
     try {
       const bookData = await bookSearch(req.query);
       if (bookData === -1) {

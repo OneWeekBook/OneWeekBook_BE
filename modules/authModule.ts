@@ -1,9 +1,18 @@
 import { verify } from "./jwtModule";
 import { User } from "../models";
+import { Request, Response, NextFunction } from "express";
+
+interface UserInfo {
+  id: number;
+  email: string;
+  nick: string;
+  username: string;
+  role: number;
+}
 
 const authModule = {
-  isLoggedIn: async (req, res, next) => {
-    const accessToken = req.headers.authorization;
+  isLoggedIn: async (req: Request, res: Response, next: NextFunction) => {
+    const accessToken: string | undefined = req.headers.authorization;
     if (!accessToken) {
       return res.status(401).json({
         message: "액세스 토큰이 존재하지 않습니다.",
