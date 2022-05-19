@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import { sendEmail } from "../modules/nodeMailerModule";
+import {
+  sendCodeBody,
+  authEmailBody,
+} from "../types/controllers/authController.types";
 let codeNumber: string = "";
 let ing: boolean = false; // 인증 시간이 진행중인지 확인변수
 let timer: ReturnType<typeof setTimeout>;
-
 const authController = {
   sendCode: (req: Request, res: Response) => {
     if (ing) {
@@ -12,11 +15,11 @@ const authController = {
         message: "이미 이메일이 전송되었습니다.\n 잠시 후 재전송 바랍니다.",
       });
     }
-    const { email } = req.body;
+    const { email }: sendCodeBody = req.body;
     for (let i = 0; i < 6; i++) {
       codeNumber += Math.floor(Math.random() * 10);
     }
-    const boolSendEmail = sendEmail(email, codeNumber);
+    const boolSendEmail = await sendEmail(email, codeNumber);
     if (boolSendEmail) {
       ing = true;
       timer = setTimeout(() => {
@@ -42,7 +45,7 @@ const authController = {
         message: "이메인 인증 제한시간이 만료되었습니다.",
       });
     }
-    const { code } = req.body;
+    const { code }: authEmailBody = req.body;
     if (code === codeNumber) {
       ing = false;
       clearTimeout(timer);

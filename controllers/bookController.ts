@@ -3,10 +3,13 @@ import {
   Category,
   UserBookList,
   BookParagraph,
-  BookReview,
   BookReviewLike,
+  User,
+  Op,
+  sequelize,
 } from "../models";
 
+const { procedureParsing } = require("../modules/procedureParsing");
 const bookController = {
   getCategories: async (req: Request, res: Response) => {
     try {
@@ -61,18 +64,25 @@ const bookController = {
     try {
       const { isbn, title, author, publisher, img, userId } = req.body;
       const isbn13 = isbn.split(" ")[1];
-      await UserBookList.create({
-        isbn: isbn13,
-        title,
-        author,
-        publisher,
-        img,
-        userId,
+      const [, created] = await UserBookList.findOrCreate({
+        where: {
+          isbn: isbn13,
+          title,
+          author,
+          publisher,
+          img,
+          userId,
+        },
       });
-
-      return res.status(201).json({
-        success: true,
-        message: "내 서재에 추가 완료!",
+      if (created) {
+        return res.status(201).json({
+          success: true,
+          message: "내 서재에 추가 완료!",
+        });
+      }
+      return res.status(409).json({
+        success: false,
+        message: "이미 찜한 책 입니다.",
       });
     } catch (error) {
       return res.status(500).json({
@@ -203,19 +213,43 @@ const bookController = {
     }
   },
 
+<<<<<<< HEAD
   getAllReviews: async (req: Request, res: Response) => {
+=======
+  getAllReviews: async (req, res) => {
+    const { start, display, sortby } = req.query;
+    let sort_value = "createdAt";
+    if (sortby === "recommend") {
+      sort_value = "recommend";
+    }
     try {
-      const reviews = await BookReview.findAll();
-      if (reviews) {
-        return res.status(200).json({
-          success: true,
-          message: "리뷰 조회 완료!",
-          reviews,
-        });
-      }
-      return res.status(404).json({
-        success: false,
-        message: "리뷰 조회 실패!",
+      const reviews = await UserBookList.findAndCountAll({
+        where: {
+          review: {
+            [Op.ne]: null,
+          },
+        },
+        group: ["isbn"],
+        attributes: {
+          exclude: [
+            "userId",
+            "review",
+            "rating",
+            "progress",
+            "startTime",
+            "endTime",
+            "createdAt",
+            "updatedAt",
+          ],
+        },
+        offset: parseInt(start) || 0,
+        limit: parseInt(display) || 10,
+        order: [[sort_value, "DESC"]],
+      });
+      return res.status(200).json({
+        success: true,
+        message: "리뷰 조회 성공!",
+        reviews,
       });
     } catch (error) {
       return res.status(500).json({
@@ -225,22 +259,67 @@ const bookController = {
     }
   },
 
-  getOneReviews: async (req: Request, res: Response) => {
+  getOneBookReviews: async (req, res) => {
+>>>>>>> 08c5fd60383a23aaaf8343dc79f11d479a8d00fe
     try {
-      console.log(req.params);
-      const { bookId } = req.params;
-      console.log(bookId);
-      const reviews = await BookReview.findAll({ where: { bookId } });
-      if (reviews) {
+      const { isbn } = req.params;
+      const callProcedure = `
+        call getonebookreviews(:isbn);
+      `;
+      const queryResults = await sequelize.query(callProcedure, {
+        replacements: { isbn },
+        type: sequelize.QueryTypes.SELECT,
+      });
+      const results = procedureParsing(queryResults);
+      if (results) {
         return res.status(200).json({
           success: true,
           message: "리뷰 조회 완료!",
-          reviews,
+          results,
         });
       }
       return res.status(404).json({
         success: false,
         message: "리뷰 조회 실패!",
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
+<<<<<<< HEAD
+  getOneReviews: async (req: Request, res: Response) => {
+=======
+  getOneReview: async (req, res) => {
+>>>>>>> 08c5fd60383a23aaaf8343dc79f11d479a8d00fe
+    try {
+      const { bookId, userId } = req.params;
+      const review = await UserBookList.findOne({
+        include: [
+          {
+            model: User,
+            where: { id: userId },
+            attributes: { exclude: ["password"] },
+          },
+        ],
+        where: {
+          id: bookId,
+        },
+      });
+      if (review) {
+        return res.status(200).json({
+          success: true,
+          message: "리뷰 조회 성공!",
+          review,
+        });
+      }
+      return res.status(404).json({
+        success: false,
+        message: "조회할 리뷰가 없습니다.",
       });
     } catch (error) {
       return res.status(500).json({
@@ -255,11 +334,26 @@ const bookController = {
       const { bookId } = req.params;
       const { review, rating } = req.body;
 
-      await BookReview.create({
-        review,
-        rating,
-        bookId,
+      const book = await UserBookList.findOne({
+        where: { id: bookId },
       });
+      if (book.review) {
+        return res.status(409).json({
+          message: "이미 리뷰가 존재합니다.",
+          success: false,
+        });
+      }
+      await UserBookList.update(
+        {
+          review,
+          rating,
+        },
+        {
+          where: {
+            id: bookId,
+          },
+        }
+      );
       return res.status(201).json({
         message: "리뷰 작성 성공!",
         success: true,
@@ -271,15 +365,41 @@ const bookController = {
       });
     }
   },
+<<<<<<< HEAD
   deleteReview: async (req: Request, res: Response) => {
+=======
+
+  updateReview: async (req, res) => {
     try {
-      const { id } = req.query;
-      await BookReview.destroy({ where: { id } });
+      const { bookId } = req.params;
+      const { review, rating } = req.body;
+      await UserBookList.update({ review, rating }, { where: { id: bookId } });
+      return res.status(200).json({
+        success: true,
+        message: "리뷰 수정 완료!",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
+  deleteReview: async (req, res) => {
+>>>>>>> 08c5fd60383a23aaaf8343dc79f11d479a8d00fe
+    try {
+      const { bookId } = req.params;
+      await UserBookList.update(
+        { review: null, rating: 0.0 },
+        { where: { id: bookId } }
+      );
       return res.status(200).json({
         success: true,
         message: "리뷰 삭제 성공!",
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         success: false,
         message: "DB서버 에러!",
@@ -290,13 +410,24 @@ const bookController = {
   likeReview: async (req: Request, res: Response) => {
     try {
       const { bookId } = req.params;
-      const { userId } = req.body;
-      await BookReviewLike.findOrCreate({
-        where: { userId, bookId },
+      const { state, userId } = req.body;
+      const [, created] = await BookReviewLike.findOrCreate({
+        where: { userId, userBookListId: bookId },
+        defaults: {
+          state,
+          userBookListId: bookId,
+          userId,
+        },
       });
-      return res.status(200).json({
-        success: true,
-        message: "좋아요 성공!",
+      if (created) {
+        return res.status(200).json({
+          success: true,
+          message: "좋아요 성공!",
+        });
+      }
+      return res.status(409).json({
+        success: false,
+        message: "이미 좋아하는 리뷰입니다.",
       });
     } catch (error) {
       return res.status(500).json({
@@ -309,12 +440,18 @@ const bookController = {
     try {
       const { bookId } = req.params;
       const { userId } = req.body;
-      await BookReviewLike.destroy({
-        where: { userId, bookId },
+      const result = await BookReviewLike.destroy({
+        where: { userId, userBookListId: bookId },
       });
-      return res.status(200).json({
-        success: true,
-        message: "좋아요 취소!",
+      if (result) {
+        return res.status(200).json({
+          success: true,
+          message: "좋아요 취소!",
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        message: "이 게시물을 좋아하지 않습니다.",
       });
     } catch (error) {
       return res.status(500).json({

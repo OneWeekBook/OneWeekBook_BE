@@ -1,11 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
 const app: express.Application = express();
-import db from "./models";
 import indexRouter from "./routes";
 import logger from "morgan";
 import cors from "cors";
 import helmet from "helmet";
 import { port } from "./config/nodeConfig.json";
+import db from "./models"
 
 (async () => {
   await db.sequelize.sync();
