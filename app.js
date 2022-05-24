@@ -7,7 +7,6 @@ const logger = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 
-
 (async () => {
   await db.sequelize.sync();
   console.log("MariaDB Sync 완료!");
@@ -24,6 +23,7 @@ app.use((req, res, next) => {
     success: false,
   });
 });
+
 const port = process.env.PORT;
 
 app.listen(port || 4040, () => {
