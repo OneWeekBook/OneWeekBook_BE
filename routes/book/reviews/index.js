@@ -9,10 +9,12 @@ const {
   cancelLikeReview,
   deleteReview,
   updateReview,
+  getLatestReviews,
 } = require("../../../controllers/bookController");
 const { isLoggedIn } = require("../../../modules/authModule");
 
 router.get("/", getAllReviews);
+router.get("/latest", getLatestReviews);
 router.get("/:isbn", getOneBookReviews);
 router.get("/:bookId/:userId", getOneReview);
 router.post("/:bookId", isLoggedIn, createReview);

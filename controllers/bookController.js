@@ -240,6 +240,42 @@ const bookController = {
     }
   },
 
+  getLatestReviews: async (req, res) => {
+    try {
+      const reviews = await UserBookList.findAll({
+        where: {
+          review: {
+            [Op.ne]: null,
+          },
+        },
+        include: [
+          {
+            model: User,
+            attributes: { exclude: ["password"] },
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+        limit: 20,
+      });
+      if (reviews) {
+        return res.status(200).json({
+          success: true,
+          message: "리뷰 조회 성공!",
+          reviews,
+        });
+      }
+      return res.status(404).json({
+        success: false,
+        message: "조회할 데이터가 없습니다.",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
   getOneBookReviews: async (req, res) => {
     try {
       const { isbn } = req.params;
