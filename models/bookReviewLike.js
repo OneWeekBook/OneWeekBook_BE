@@ -11,7 +11,7 @@ class BookReviewLike extends Sequelize.Model {
       },
       {
         sequelize,
-        modelName: "BookReviewLike",
+        modelName: "bookreviewlike",
         charset: "utf8",
         collate: "utf8_general_ci",
       }

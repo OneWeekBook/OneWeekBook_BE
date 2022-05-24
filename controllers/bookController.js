@@ -28,6 +28,7 @@ const bookController = {
       return res.status(500).json({
         success: false,
         message: "DB 에러!",
+	error,
       });
     }
   },

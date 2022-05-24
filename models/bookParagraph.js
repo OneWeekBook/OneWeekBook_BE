@@ -11,7 +11,7 @@ class BookParagraph extends Sequelize.Model {
       },
       {
         sequelize,
-        modelName: "BookParagraph",
+        modelName: "bookparagraph",
         charset: "utf8",
         collate: "utf8_general_ci",
       }
