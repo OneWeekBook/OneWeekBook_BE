@@ -1,11 +1,11 @@
 const express = require("express");
 const app = express();
+require("dotenv").config();
 const db = require("./models");
 const indexRouter = require("./routes");
 const logger = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
-require("dotenv").config();
 
 (async () => {
   await db.sequelize.sync();
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
     success: false,
   });
 });
-
+app.get("/", (req, res) => res.send("hello"));
 const port = process.env.PORT;
 
 app.listen(port || 4040, () => {

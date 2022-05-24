@@ -24,7 +24,7 @@ class Category extends Sequelize.Model {
       },
       {
         sequelize,
-        modelName: "User",
+        modelName: "Category",
         charset: "utf8",
         collate: "utf8_general_ci",
         timestamps: false,

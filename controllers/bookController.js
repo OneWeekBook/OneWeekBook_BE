@@ -24,6 +24,7 @@ const bookController = {
         message: "카테고리를 가져오는데 실패했습니다.",
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         success: false,
         message: "DB 에러!",
@@ -212,34 +213,19 @@ const bookController = {
   },
 
   getAllReviews: async (req, res) => {
-    const { start, display, sortby } = req.query;
-    let sort_value = "createdAt";
-    if (sortby === "recommend") {
-      sort_value = "recommend";
-    }
+    let { start, display, sortby } = req.query;
+    start = parseInt(start);
+    display = parseInt(display);
     try {
-      const reviews = await UserBookList.findAndCountAll({
-        where: {
-          review: {
-            [Op.ne]: null,
-          },
-        },
-        group: ["isbn"],
-        attributes: {
-          exclude: [
-            "userId",
-            "review",
-            "rating",
-            "progress",
-            "startTime",
-            "endTime",
-            "createdAt",
-            "updatedAt",
-          ],
-        },
-        offset: parseInt(start) || 0,
-        limit: parseInt(display) || 10,
-        order: [[sort_value, "DESC"]],
+      let callQuery;
+      if (sortby === "totalReviews") {
+        callQuery = `select title, author, publisher, img, isbn, count(*) as countReviews from userbooklists where review is not null group by isbn order by countReviews desc limit ?, ?`;
+      } else {
+        callQuery = `select title, author, publisher, img, isbn, count(*) as countReviews from userbooklists where review is not null group by isbn order by createdAt desc limit ?, ?`;
+      }
+      const reviews = await sequelize.query(callQuery, {
+        replacements: [start, display],
+        type: sequelize.QueryTypes.SELECT,
       });
       return res.status(200).json({
         success: true,
@@ -257,6 +243,11 @@ const bookController = {
   getOneBookReviews: async (req, res) => {
     try {
       const { isbn } = req.params;
+      const { sortby } = req.query;
+      let sort_value = "createdAt";
+      if (sortby === "recommend") {
+        sort_value = "recommend";
+      }
       const callProcedure = `
         call getonebookreviews(:isbn);
       `;

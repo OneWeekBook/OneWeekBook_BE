@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon app",
-    "start": "pm2 start"
+    "start": "pm2 start app.js"
   },
   "repository": {
     "type": "git",
