@@ -23,7 +23,6 @@ app.use((req, res, next) => {
     success: false,
   });
 });
-app.get("/", (req, res) => res.send("hello"));
 const port = process.env.PORT;
 
 app.listen(port || 4040, () => {
