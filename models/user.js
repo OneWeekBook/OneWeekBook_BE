@@ -28,7 +28,7 @@ class User extends Sequelize.Model {
       },
       {
         sequelize,
-        modelName: "User",
+        modelName: "user",
         charset: "utf8",
         collate: "utf8_general_ci",
       }

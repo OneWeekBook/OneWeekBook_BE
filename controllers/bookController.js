@@ -23,10 +23,11 @@ const bookController = {
         success: false,
         message: "카테고리를 가져오는데 실패했습니다.",
       });
-    } catch (error) {
-      return res.status(500).json({
+    } catch (error){
+        return res.status(500).json({
         success: false,
         message: "DB 에러!",
+	error,
       });
     }
   },

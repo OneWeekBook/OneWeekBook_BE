@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon app",
-    "start": "pm2 start"
+    "start": "pm2 start app.js"
   },
   "repository": {
     "type": "git",
@@ -31,7 +31,6 @@
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.7.2",
-    "pm2": "^5.2.0",
     "request": "^2.88.2",
     "sequelize": "^6.19.0"
   },
