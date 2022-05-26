@@ -7,7 +7,14 @@ const {
   Op,
   sequelize,
 } = require("../models");
-const { procedureParsing } = require("../modules/procedureParsing");
+const {
+  ALL_REVIEW_QUERY_ORDER_TOTALREVIEW,
+  ALL_REVIEW_QUERY_ORDER_NEW,
+  ONE_BOOK_REVIEWS_BOOK_DATA,
+  ONE_BOOK_REVIEWS_REVIEW_DATA_ORDER_NEW,
+  ONE_BOOK_REVIEWS_REVIEW_DATA_ORDER_LIKE_COUNT,
+} = require("../query/bookControllerQuery");
+
 const bookController = {
   getCategories: async (req, res) => {
     try {
@@ -28,7 +35,7 @@ const bookController = {
       return res.status(500).json({
         success: false,
         message: "DB 에러!",
-	error,
+        error,
       });
     }
   },
@@ -53,6 +60,7 @@ const bookController = {
         message: "찜 목록을 가져오는데 실패했습니다.",
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({
         success: false,
         message: "DB서버 에러!",
@@ -218,13 +226,13 @@ const bookController = {
     start = parseInt(start);
     display = parseInt(display);
     try {
-      let callQuery;
+      let sqlQuery;
       if (sortby === "totalReviews") {
-        callQuery = `select title, author, publisher, img, isbn, count(*) as countReviews from userbooklists where review is not null group by isbn order by countReviews desc limit ?, ?`;
+        sqlQuery = ALL_REVIEW_QUERY_ORDER_TOTALREVIEW;
       } else {
-        callQuery = `select title, author, publisher, img, isbn, count(*) as countReviews from userbooklists where review is not null group by isbn order by createdAt desc limit ?, ?`;
+        sqlQuery = ALL_REVIEW_QUERY_ORDER_NEW;
       }
-      const reviews = await sequelize.query(callQuery, {
+      const reviews = await sequelize.query(sqlQuery, {
         replacements: [start, display],
         type: sequelize.QueryTypes.SELECT,
       });
@@ -281,23 +289,27 @@ const bookController = {
     try {
       const { isbn } = req.params;
       const { sortby } = req.query;
-      let sort_value = "createdAt";
+
+      const bookDataQuery = ONE_BOOK_REVIEWS_BOOK_DATA;
+
+      let reviewDataQuery = ONE_BOOK_REVIEWS_REVIEW_DATA_ORDER_NEW;
       if (sortby === "recommend") {
-        sort_value = "recommend";
+        reviewDataQuery = ONE_BOOK_REVIEWS_REVIEW_DATA_ORDER_LIKE_COUNT;
       }
-      const callProcedure = `
-        call getonebookreviews(:isbn);
-      `;
-      const queryResults = await sequelize.query(callProcedure, {
-        replacements: { isbn },
+      const bookData = await sequelize.query(bookDataQuery, {
+        replacements: [isbn],
         type: sequelize.QueryTypes.SELECT,
       });
-      const results = procedureParsing(queryResults);
-      if (results) {
+      const reviewData = await sequelize.query(reviewDataQuery, {
+        replacements: [isbn],
+        type: sequelize.QueryTypes.SELECT,
+      });
+      if (bookData && reviewData) {
         return res.status(200).json({
           success: true,
           message: "리뷰 조회 완료!",
-          results,
+          bookData,
+          reviewData,
         });
       }
       return res.status(404).json({
@@ -365,6 +377,7 @@ const bookController = {
         {
           review,
           rating,
+          reviewCreationTime: new Date(),
         },
         {
           where: {

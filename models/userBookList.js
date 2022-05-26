@@ -46,6 +46,10 @@ class UserBookList extends Sequelize.Model {
           type: Sequelize.DECIMAL(2, 1),
           defaultValue: 0,
         },
+        reviewCreationTime: {
+          type: Sequelize.DATE,
+          defaultValue: null,
+        },
       },
       {
         sequelize,

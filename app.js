@@ -8,7 +8,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 
 (async () => {
-  await db.sequelize.sync();
+  await db.sequelize.sync({ force: false });
   console.log("MariaDB Sync 완료!");
 })();
 app.use(helmet());
@@ -23,8 +23,7 @@ app.use((req, res, next) => {
     success: false,
   });
 });
-const port = process.env.PORT;
-
-app.listen(port || 4040, () => {
+const port = process.env.PORT || 4040;
+app.listen(port, () => {
   console.log(`${port}server on...`);
 });
