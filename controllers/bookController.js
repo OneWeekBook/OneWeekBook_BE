@@ -222,10 +222,11 @@ const bookController = {
   },
 
   getAllReviews: async (req, res) => {
-    let { start, display, sortby } = req.query;
-    start = parseInt(start);
-    display = parseInt(display);
     try {
+      let { start, display, sortby } = req.query;
+      start = Number.isInteger(parseInt(start)) ? parseInt(start) : 0;
+      display = Number.isInteger(parseInt(display)) ? parseInt(display) : 10;
+
       let sqlQuery;
       if (sortby === "totalReviews") {
         sqlQuery = ALL_REVIEW_QUERY_ORDER_TOTALREVIEW;
@@ -288,7 +289,9 @@ const bookController = {
   getOneBookReviews: async (req, res) => {
     try {
       const { isbn } = req.params;
-      const { sortby } = req.query;
+      let { start, display, sortby } = req.query;
+      start = Number.isInteger(parseInt(start)) ? parseInt(start) : 0;
+      display = Number.isInteger(parseInt(display)) ? parseInt(display) : 10;
 
       const bookDataQuery = ONE_BOOK_REVIEWS_BOOK_DATA;
 
@@ -297,11 +300,11 @@ const bookController = {
         reviewDataQuery = ONE_BOOK_REVIEWS_REVIEW_DATA_ORDER_LIKE_COUNT;
       }
       const bookData = await sequelize.query(bookDataQuery, {
-        replacements: [isbn],
+        replacements: [isbn, start, display],
         type: sequelize.QueryTypes.SELECT,
       });
       const reviewData = await sequelize.query(reviewDataQuery, {
-        replacements: [isbn],
+        replacements: [isbn, start, display],
         type: sequelize.QueryTypes.SELECT,
       });
       if (bookData && reviewData) {
@@ -317,7 +320,6 @@ const bookController = {
         message: "리뷰 조회 실패!",
       });
     } catch (error) {
-      console.error(error);
       return res.status(500).json({
         success: false,
         message: "DB서버 에러!",
