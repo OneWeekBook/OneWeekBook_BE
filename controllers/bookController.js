@@ -360,7 +360,6 @@ const bookController = {
       });
     }
   },
-
   createReview: async (req, res) => {
     try {
       const { bookId } = req.params;
@@ -429,6 +428,33 @@ const bookController = {
       });
     } catch (error) {
       console.log(error);
+      return res.status(500).json({
+        success: false,
+        message: "DB서버 에러!",
+      });
+    }
+  },
+
+  getReviewLike: async (req, res) => {
+    try {
+      const { bookId } = req.params;
+      const likeData = await BookReviewLike.findAll({
+        where: { userbooklistId: bookId },
+        include: [{ model: User }],
+      });
+
+      if (likeData) {
+        return res.status(200).json({
+          success: true,
+          message: "좋아요 조회 성공!",
+          likeData,
+        });
+      }
+      return res.status(404).json({
+        success: false,
+        message: "좋아요 조회 실패!",
+      });
+    } catch (error) {
       return res.status(500).json({
         success: false,
         message: "DB서버 에러!",
