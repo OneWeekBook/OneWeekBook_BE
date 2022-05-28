@@ -452,7 +452,7 @@ const bookController = {
       }
       return res.status(404).json({
         success: false,
-        message: "좋아요 조회 실패!",
+        message: "조회할 좋아요가 없습니다.",
       });
     } catch (error) {
       return res.status(500).json({
