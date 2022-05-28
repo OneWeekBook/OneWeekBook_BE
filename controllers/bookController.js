@@ -435,15 +435,15 @@ const bookController = {
     }
   },
 
-  getReviewLike: async (req, res) => {
+  getReviewLikes: async (req, res) => {
     try {
       const { bookId } = req.params;
       const likeData = await BookReviewLike.findAll({
         where: { userbooklistId: bookId },
-        include: [{ model: User }],
+        include: [{ model: User, attributes: { exclude: ["password"] } }],
       });
 
-      if (likeData) {
+      if (likeData.length) {
         return res.status(200).json({
           success: true,
           message: "좋아요 조회 성공!",
