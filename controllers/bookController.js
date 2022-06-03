@@ -443,7 +443,7 @@ const bookController = {
         include: [{ model: User, attributes: { exclude: ["password"] } }],
       });
 
-      if (likeData.length) {
+      if (likeData) {
         return res.status(200).json({
           success: true,
           message: "좋아요 조회 성공!",
@@ -452,7 +452,7 @@ const bookController = {
       }
       return res.status(404).json({
         success: false,
-        message: "조회할 좋아요가 없습니다.",
+        message: "좋아요 조회 실패!",
       });
     } catch (error) {
       return res.status(500).json({
