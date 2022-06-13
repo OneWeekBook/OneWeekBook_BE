@@ -30,3 +30,5 @@ where isbn = ? and review is not null
 order by reviewCreationTime desc
 limit ?, ?
 `;
+
+exports.ALL_TYPE_REVIEW = `select count(*) as count from (select * from userbooklists group by isbn) subTable where review is not null`;

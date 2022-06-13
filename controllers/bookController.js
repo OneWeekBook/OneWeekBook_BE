@@ -13,6 +13,7 @@ const {
   ONE_BOOK_REVIEWS_BOOK_DATA,
   ONE_BOOK_REVIEWS_REVIEW_DATA_ORDER_NEW,
   ONE_BOOK_REVIEWS_REVIEW_DATA_ORDER_LIKE_COUNT,
+  ALL_TYPE_REVIEW,
 } = require("../query/bookControllerQuery");
 
 const bookController = {
@@ -233,12 +234,8 @@ const bookController = {
       } else {
         sqlQuery = ALL_REVIEW_QUERY_ORDER_NEW;
       }
-      const allReviewCount = await UserBookList.findAndCountAll({
-        where: {
-          review: {
-            [Op.ne]: null,
-          },
-        },
+      const [countAllReviewBooks, _] = await sequelize.query(ALL_TYPE_REVIEW, {
+        type: sequelize.QueryTypes.SELECT,
       });
       const reviews = await sequelize.query(sqlQuery, {
         replacements: [start, display],
@@ -248,7 +245,7 @@ const bookController = {
         success: true,
         message: "리뷰 조회 성공!",
         reviews,
-        allReviewCount: allReviewCount.count,
+        countAllReviewBooks: countAllReviewBooks.count,
       });
     } catch (error) {
       return res.status(500).json({
