@@ -72,7 +72,9 @@ const bookController = {
   addMyList: async (req, res) => {
     try {
       const { isbn, title, author, publisher, img, userId } = req.body;
-      const isbn13 = isbn.split(" ")[1];
+      const isbn13 = isbn.split(" ")[1]
+        ? isbn.split(" ")[1]
+        : isbn.split(" ")[0];
       console.log("isbn: ", isbn);
       console.log("isbn13:", isbn13);
       console.log("title:", title);
