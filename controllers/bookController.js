@@ -73,6 +73,7 @@ const bookController = {
     try {
       const { isbn, title, author, publisher, img, userId } = req.body;
       const isbn13 = isbn.split(" ")[1];
+      console.log("isbn: ", isbn);
       console.log("isbn13:", isbn13);
       console.log("title:", title);
       console.log("author:", author);
