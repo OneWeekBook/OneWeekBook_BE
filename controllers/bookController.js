@@ -75,13 +75,6 @@ const bookController = {
       const isbn13 = isbn.split(" ")[1]
         ? isbn.split(" ")[1]
         : isbn.split(" ")[0];
-      console.log("isbn: ", isbn);
-      console.log("isbn13:", isbn13);
-      console.log("title:", title);
-      console.log("author:", author);
-      console.log("publisher:", publisher);
-      console.log("img:", img);
-      console.log("userId:", userId);
 
       const [, created] = await UserBookList.findOrCreate({
         where: {
