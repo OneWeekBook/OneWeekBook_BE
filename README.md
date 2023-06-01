@@ -1,9 +1,12 @@
-# OneWeekBook
+# OneWeekBook API Document
+- 응답은 json형태로 보내짐
+- 모든 응답에는 success 값이 포함되어 있음 true/false
+- 모든 응답에는 status 코드값이 존재함.
 
-## model 만들 시 주의할 점
-
-- 특정 모델 파일에서 함수이기 때문에 꼭 return을 해주어야 함.
-
-## type
-
-- for (let i in arr) 에서 i는 string타입
+### [1. User API](https://github.com/OneWeekBook/OneWeekBook_BE/wiki/1.-User-API)
+### [2. Category API](https://github.com/OneWeekBook/OneWeekBook_BE/wiki/2.-Category-API)
+### [3. Search API](https://github.com/OneWeekBook/OneWeekBook_BE/wiki/3.-Search-API)
+### [4. Review API](https://github.com/OneWeekBook/OneWeekBook_BE/wiki/4.-Reveiw-API)
+### [5. Auth API](https://github.com/OneWeekBook/OneWeekBook_BE/wiki/5.-Auth-API)
+### [6. Library API](https://github.com/OneWeekBook/OneWeekBook_BE/wiki/6.-Library-API)
+### [7. Paragraph API](https://github.com/OneWeekBook/OneWeekBook_BE/wiki/7.-Paragraph-API)
